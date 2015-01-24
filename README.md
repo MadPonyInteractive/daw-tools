@@ -8,7 +8,6 @@ one intention is to be used in [Carla](https://github.com/falkTX/Carla) as a sta
 TODO/WISHLIST
 -------------
 * fix bounds enforcement and errors
-* fix quantization/default length to be note lengths
 * properly tie note information to note_items
 * implement loop-around-from-beginning notes
 * implement changing note length (front and back)
