@@ -7,20 +7,20 @@ one intention is to be used in [Carla](https://github.com/falkTX/Carla) as a sta
 
 TODO/WISHLIST
 -------------
+* quantization is confusing for nonstandard note lengths
 * fix bounds enforcement and errors
-* properly tie note information to note_items
 * implement loop-around-from-beginning notes
 * implement changing note length (front and back)
-* expose scaling
 * disable ghost note and insertion when hovering over the piano and existing notes
 * refine the rest of the UI (e.g. auto escape comboboxes)
 * start making keyboard shorcuts
+* anchor piano and measure indicator
 
 WON'T GET DONE FOR A WHILE (but would be nice eventually)
 ---------------------------------------------------------
 ### piano
 * cut, copy, paste
-* set default view to be ~halfway down page (around c3)
+* undo/redo
 * velocity editor
 * pitchbend (will be overlayed envelope)
 * fix piano playing
