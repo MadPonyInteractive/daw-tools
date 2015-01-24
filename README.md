@@ -12,7 +12,6 @@ TODO/WISHLIST
 * properly tie note information to note_items
 * implement loop-around-from-beginning notes
 * implement changing note length (front and back)
-* figure out how to get rid of global variables... the main thing right now is that the individual `note_items` are currently relying on `snap()` so if I can figure out how to move them solely via the `piano_roll` i could get rid of the global vars. this might also be related to the multi-dragging issue
 * expose scaling
 * disable ghost note and insertion when hovering over the piano and existing notes
 * refine the rest of the UI (e.g. auto escape comboboxes)
