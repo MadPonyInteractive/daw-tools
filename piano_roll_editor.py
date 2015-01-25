@@ -422,8 +422,13 @@ class PianoRoll(QtGui.QGraphicsScene):
         self.drawPiano()
         self.drawHeader()
         self.drawGrid()
-        #for note in self.notes:
-            #if note.pos().x() > self.grid_width:
+        for note in self.notes[:]:
+            if note.note[1] >= (self.num_measures * self.time_sig[0]):
+                self.notes.remove(note)
+            elif note.note[2] > (self.num_measures * self.time_sig[0] / self.time_sig[1]):
+                new_note = note.note
+                self.notes.remove(note)
+                self.drawNote(new_note[0], new_note[1], self.num_measures * self.time_sig[0] / self.time_sig[1], new_note[3], False)
         map(self.addItem, self.notes)
 
     def clearDrawnItems(self):
@@ -447,17 +452,18 @@ class PianoRoll(QtGui.QGraphicsScene):
         self.ghost_note.setBrush(QtGui.QColor(230, 221, 45, 100))
         self.addItem(self.ghost_note)
 
-    def drawNote(self, note_num, note_start=None, note_length=None, note_velocity=None):
+    def drawNote(self, note_num, note_start=None, note_length=None, note_velocity=None, add=True):
         """
         note_num: midi number, 0 - 127
         note_start: 0 - (num_measures * time_sig[0])
-        note_length: 0 - (num_measures  * time_sig[0]
+        note_length: 0 - (num_measures  * time_sig[0]/time_sig[1])
         note_velocity: 0 - 127
         """
-        #might be good to have this i don't know though
-        info = [note_num, note_start, note_length, note_velocity]
 
-        note_start = note_start % (self.num_measures * self.time_sig[0])
+        if not note_start % (self.num_measures * self.time_sig[0]) == note_start:
+            return None
+
+        info = [note_num, note_start, note_length, note_velocity]
 
         x_start = self.get_note_x_start(note_start)
         if note_length > self.time_sig[0] / self.time_sig[1] * self.num_measures:
@@ -471,8 +477,9 @@ class PianoRoll(QtGui.QGraphicsScene):
         #f_vel_opacity.setOpacity(note_velocity * 0.007874016 * 0.6 + 0.3)
         #note.setGraphicsEffect(f_vel_opacity)
 
-        self.addItem(note)
         self.notes.append(note)
+        if add:
+            self.addItem(note)
 
     # -------------------------------------------------------------------------
     # Helper Functions
@@ -669,7 +676,4 @@ if __name__ == '__main__':
     main.piano.drawNote(74, 2, 0.25, 20)
     main.piano.drawNote(75, 3, 0.25, 20)
     main.piano.drawNote(76, 4, 0.25, 20)
-    main.piano.drawNote(76, 18, 0.25, 20)
-    main.piano.drawNote(76, 19, 0.25, 20)
-    main.piano.drawNote(76, 20, 0.25, 20)
     sys.exit(app.exec_())
