@@ -83,7 +83,7 @@ class NoteItem(QtGui.QGraphicsRectItem):
 class PianoKeyItem(QtGui.QGraphicsRectItem):
     def __init__(self, width, height, parent):
         QtGui.QGraphicsRectItem.__init__(self, 0, 0, width, height, parent)
-        self.setPen(QtGui.QPen(QtGui.QColor(0,0,0,50)))
+        self.setPen(QtGui.QPen(QtGui.QColor(0,0,0,80)))
         self.width = width
         self.height = height
         self.setFlag(QtGui.QGraphicsItem.ItemSendsGeometryChanges)
@@ -139,6 +139,7 @@ class PianoRoll(QtGui.QGraphicsScene):
         self.padding = 2
 
         ## piano dimensions
+        self.piano = None
         self.note_height = 10
         self.start_octave = -2
         self.end_octave = 8
@@ -359,28 +360,39 @@ class PianoRoll(QtGui.QGraphicsScene):
         labels = ('B','Bb','A','Ab','G','Gb','F','E','Eb','D','Db','C')
         black_notes = (2,4,6,9,11)
         piano_label = QtGui.QFont()
-        piano_label.setPointSize(8)
+        piano_label.setPointSize(6)
         self.piano = QtGui.QGraphicsRectItem(0, 0, self.piano_width, self.piano_height)
         self.piano.setPos(0, self.header_height)
         self.addItem(self.piano)
 
         key = PianoKeyItem(self.piano_width, self.note_height, self.piano)
         label = QtGui.QGraphicsSimpleTextItem('C8', key)
-        label.setPos(4, 0)
+        label.setPos(18, 1)
         label.setFont(piano_label)
         key.setBrush(QtGui.QColor(255, 255, 255))
         for i in range(self.end_octave - self.start_octave, self.start_octave - self.start_octave, -1):
             for j in range(self.notes_in_octave, 0, -1):
-                key = PianoKeyItem(self.piano_width, self.note_height, self.piano)
-                key.setPos(0, self.note_height * j + self.octave_height * (i - 1))
-                if j == 12:
-                    label = QtGui.QGraphicsSimpleTextItem('%s%d' % (labels[(j - 1)], self.end_octave - i), key)
-                    label.setPos(4, 0)
-                    label.setFont(piano_label)
                 if j in black_notes:
+                    key = PianoKeyItem(self.piano_width/1.4, self.note_height, self.piano)
                     key.setBrush(QtGui.QColor(0, 0, 0))
-                else:
+                    key.setZValue(1.0)
+                    key.setPos(0, self.note_height * j + self.octave_height * (i - 1))
+                elif (j - 1) and (j + 1) in black_notes:
+                    key = PianoKeyItem(self.piano_width, self.note_height * 2, self.piano)
                     key.setBrush(QtGui.QColor(255, 255, 255))
+                    key.setPos(0, self.note_height * j + self.octave_height * (i - 1) - self.note_height/2.)
+                elif (j - 1) in black_notes:
+                    key = PianoKeyItem(self.piano_width, self.note_height * 3./2, self.piano)
+                    key.setBrush(QtGui.QColor(255, 255, 255))
+                    key.setPos(0, self.note_height * j + self.octave_height * (i - 1) - self.note_height/2.)
+                elif (j + 1) in black_notes:
+                    key = PianoKeyItem(self.piano_width, self.note_height * 3./2, self.piano)
+                    key.setBrush(QtGui.QColor(255, 255, 255))
+                    key.setPos(0, self.note_height * j + self.octave_height * (i - 1))
+                if j == 12:
+                    label = QtGui.QGraphicsSimpleTextItem('{}{}'.format(labels[j - 1], self.end_octave - i), key )
+                    label.setPos(18, 6)
+                    label.setFont(piano_label)
                 self.piano_keys.append(key)
 
     def drawGrid(self):
@@ -418,8 +430,17 @@ class PianoRoll(QtGui.QGraphicsScene):
     def refreshScene(self):
         map(self.removeItem, self.notes)
         self.selected_notes = []
+        
+        if self.piano:
+            self.removeItem(self.piano)
+
         self.clear()
-        self.drawPiano()
+
+        if self.piano:
+            self.addItem(self.piano)
+        else:
+            self.drawPiano()
+
         self.drawHeader()
         self.drawGrid()
         for note in self.notes[:]:
