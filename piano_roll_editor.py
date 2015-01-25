@@ -121,7 +121,7 @@ class PianoRoll(QtGui.QGraphicsScene):
     '''the piano roll'''
     def __init__(self, time_sig = '4/4', num_measures = 4, quantize_val = '1/8'):
         QtGui.QGraphicsScene.__init__(self)
-        self.setBackgroundBrush(QtGui.QColor(100, 100, 100))
+        self.setBackgroundBrush(QtGui.QColor(50, 50, 50))
         self.mousePos = QtCore.QPointF()
 
         self.notes = []
@@ -139,7 +139,6 @@ class PianoRoll(QtGui.QGraphicsScene):
         self.padding = 2
 
         ## piano dimensions
-        self.piano = None
         self.note_height = 10
         self.start_octave = -2
         self.end_octave = 8
@@ -160,6 +159,7 @@ class PianoRoll(QtGui.QGraphicsScene):
         self.full_note_width = 250 # i.e. a 4/4 note
         self.snap_value = None
         self.quantize_val = quantize_val
+
         ### dummy vars that will be changed
         self.time_sig = 0
         self.measure_width = 0
@@ -167,6 +167,8 @@ class PianoRoll(QtGui.QGraphicsScene):
         self.grid_width = 0
         self.value_width = 0
         self.grid_div = 0
+        self.piano = None
+        self.header = None
 
         self.setTimeSig(time_sig)
         self.setMeasures(num_measures)
@@ -397,6 +399,9 @@ class PianoRoll(QtGui.QGraphicsScene):
 
     def drawGrid(self):
         black_notes = [2,4,6,9,11]
+        scale_bar = QtGui.QGraphicsRectItem(0, 0, self.grid_width, self.note_height, self.piano)
+        scale_bar.setPos(self.piano_width + self.padding, 0)
+        scale_bar.setBrush(QtGui.QColor(100,100,100))
         for i in range(self.end_octave - self.start_octave, self.start_octave - self.start_octave, -1):
             for j in range(self.notes_in_octave, 0, -1):
                 scale_bar = QtGui.QGraphicsRectItem(0, 0, self.grid_width, self.note_height, self.piano)
@@ -405,6 +410,8 @@ class PianoRoll(QtGui.QGraphicsScene):
                 scale_bar.setPen(clearpen)
                 if j not in black_notes:
                     scale_bar.setBrush(QtGui.QColor(120,120,120))
+                else:
+                    scale_bar.setBrush(QtGui.QColor(100,100,100))
 
         measure_pen = QtGui.QPen()
         measure_pen.setWidth(1)
@@ -430,17 +437,9 @@ class PianoRoll(QtGui.QGraphicsScene):
     def refreshScene(self):
         map(self.removeItem, self.notes)
         self.selected_notes = []
-        
-        if self.piano:
-            self.removeItem(self.piano)
-
+        self.piano_keys = []
         self.clear()
-
-        if self.piano:
-            self.addItem(self.piano)
-        else:
-            self.drawPiano()
-
+        self.drawPiano()
         self.drawHeader()
         self.drawGrid()
         for note in self.notes[:]:
@@ -451,6 +450,8 @@ class PianoRoll(QtGui.QGraphicsScene):
                 self.notes.remove(note)
                 self.drawNote(new_note[0], new_note[1], self.num_measures * self.time_sig[0] / self.time_sig[1], new_note[3], False)
         map(self.addItem, self.notes)
+        if self.views():
+            self.views()[0].setSceneRect(self.itemsBoundingRect())
 
     def clearDrawnItems(self):
         self.clear()
@@ -575,6 +576,7 @@ class PianoRollView(QtGui.QGraphicsView):
         QtGui.QGraphicsView.__init__(self)
         self.piano = PianoRoll(time_sig, num_measures, quantize_val) 
         self.setScene(self.piano)
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
 
         x = 0   * self.sceneRect().width() + self.sceneRect().left()
         y = 0.4 * self.sceneRect().height() + self.sceneRect().top()
@@ -672,7 +674,7 @@ class MainWindow(QtGui.QWidget):
         hBox.addWidget(hSlider)
 
         viewBox = QtGui.QHBoxLayout()
-        viewBox.addWidget(vSlider)
+        #viewBox.addWidget(vSlider)
         viewBox.addWidget(view)
         viewBox.setSpacing(0)
         viewBox.setMargin(0)
