@@ -5,7 +5,7 @@ A piano roll viewer/editor
 
 from PyQt4 import QtGui, QtCore
 
-class Expander(QtGui.QGraphicsRectItem):
+class NoteExpander(QtGui.QGraphicsRectItem):
     def __init__(self, length, height, parent):
         QtGui.QGraphicsRectItem.__init__(self, 0, 0, length, height, parent)
         self.parent = parent
@@ -41,7 +41,6 @@ class Expander(QtGui.QGraphicsRectItem):
             self.parent.setBrush(self.parent.orig_brush)
         self.setBrush(self.orig_brush)
 
-
 class NoteItem(QtGui.QGraphicsRectItem):
     '''a note on the pianoroll sequencer'''
     def __init__(self, height, length, note_info):
@@ -65,12 +64,12 @@ class NoteItem(QtGui.QGraphicsRectItem):
 
         self.pressed = False
         self.hovering = False
-        self.moving_diff = False
-        self.expand_diff = False
+        self.moving_diff = (0,0)
+        self.expand_diff = 0
 
         l = 5
-        self.front = Expander(l, height, self)
-        self.back = Expander(l, height, self)
+        self.front = NoteExpander(l, height, self)
+        self.back = NoteExpander(l, height, self)
         self.back.setPos(length - l, 0)
 
     def paint(self, painter, option, widget=None):
@@ -110,31 +109,39 @@ class NoteItem(QtGui.QGraphicsRectItem):
 
         if self.back.stretch:
             self.expand(self.back, offset)
-            self.updateNoteInfo(self.scenePos().x(), self.scenePos().y())
         else:
-            self.move_pos = self.scenePos() + offset 
-            if self.moving_diff:
-                self.move_pos +=  QtCore.QPointF(self.moving_diff[0],self.moving_diff[1])
+            self.move_pos = self.scenePos() + offset \
+                    + QtCore.QPointF(self.moving_diff[0],self.moving_diff[1])
             pos = self.piano().enforce_bounds(self.move_pos)
             pos_x, pos_y = pos.x(), pos.y()
             pos_sx, pos_sy = self.piano().snap(pos_x, pos_y)
             self.moving_diff = (pos_x-pos_sx, pos_y-pos_sy)
             if self.front.stretch:
+                right = self.rect().right() - offset.x() + self.expand_diff
+                if (self.scenePos().x() == self.piano().piano_width and offset.x() < 0) \
+                        or right < 10:
+                    self.expand_diff = 0
+                    return
                 self.expand(self.front, offset)
                 self.setPos(pos_sx, self.scenePos().y())
-                self.updateNoteInfo(pos_sx, self.scenePos().y())
             else:
                 self.setPos(pos_sx, pos_sy)
 
     def expand(self, rectItem, offset):
         rect = self.rect()
-        if rectItem == self.back: right = rect.right() + offset.x()
-        else: right = rect.right() - offset.x()
-        if self.expand_diff:
-            right +=  self.expand_diff
-        pos = self.piano().enforce_bounds(QtCore.QPointF(right, 0))
-        new_x = self.piano().snap(pos.x()) - 2.75 # where does this number come from?!
-        self.expand_diff = pos.x() - new_x
+        right = rect.right() + self.expand_diff
+        if rectItem == self.back:
+            right += offset.x()
+            if right > self.piano().grid_width:
+                right = self.piano().grid_width
+            elif right < 10:
+                right = 10
+            new_x = self.piano().snap(right)
+        else:
+            right -= offset.x()
+            new_x = self.piano().snap(right+2.75)
+        if self.piano().snap_value: new_x -= 2.75 # where does this number come from?!
+        self.expand_diff = right - new_x
         self.back.setPos(new_x - 5, 0)
         rect.setRight(new_x)
         self.setRect(rect)
@@ -150,8 +157,8 @@ class NoteItem(QtGui.QGraphicsRectItem):
         QtGui.QGraphicsRectItem.mouseReleaseEvent(self, event)
         self.pressed = False
         if event.button() == QtCore.Qt.LeftButton:
-            self.moving_diff = False
-            self.expand_diff = False
+            self.moving_diff = (0,0)
+            self.expand_diff = 0
             self.back.stretch = False
             self.front.stretch = False
             (pos_x, pos_y,) = self.piano().snap(self.pos().x(), self.pos().y())
@@ -226,12 +233,12 @@ class PianoRoll(QtGui.QGraphicsScene):
         self.piano_height = self.note_height * self.total_notes
         self.octave_height = self.notes_in_octave * self.note_height
 
-        self.piano_keys_width = 34
-        self.piano_width = self.piano_keys_width - self.padding
+        self.piano_width = 34
 
         ## height
         self.header_height = 20
         self.total_height = self.piano_height - self.note_height + self.header_height
+        #not sure why note_height is subtracted
 
         ## width 
         self.full_note_width = 250 # i.e. a 4/4 note
@@ -242,6 +249,7 @@ class PianoRoll(QtGui.QGraphicsScene):
         self.time_sig = 0
         self.measure_width = 0
         self.num_measures = 0
+        self.max_note_length = 0
         self.grid_width = 0
         self.value_width = 0
         self.grid_div = 0
@@ -263,6 +271,7 @@ class PianoRoll(QtGui.QGraphicsScene):
                self.time_sig = new_time_sig
 
                self.measure_width = self.full_note_width * self.time_sig[0]/self.time_sig[1]
+               self.max_note_length = self.num_measures * self.time_sig[0]/self.time_sig[1]
                self.grid_width = self.measure_width * self.num_measures
                self.setGridDiv()
         except ValueError:
@@ -271,6 +280,7 @@ class PianoRoll(QtGui.QGraphicsScene):
     def setMeasures(self, measures):
         try:
             self.num_measures = float(measures)
+            self.max_note_length = self.num_measures * self.time_sig[0]/self.time_sig[1]
             self.grid_width = self.measure_width * self.num_measures
             self.refreshScene()
         except:
@@ -440,19 +450,20 @@ class PianoRoll(QtGui.QGraphicsScene):
     def drawHeader(self):
         self.header = QtGui.QGraphicsRectItem(0, 0, self.grid_width, self.header_height)
         #self.header.setZValue(1.0)
-        self.header.setPos(self.piano_width + self.padding, 0)
+        self.header.setPos(self.piano_width, 0)
         self.addItem(self.header)
 
     def drawPiano(self):
+        piano_keys_width = self.piano_width - self.padding
         labels = ('B','Bb','A','Ab','G','Gb','F','E','Eb','D','Db','C')
         black_notes = (2,4,6,9,11)
         piano_label = QtGui.QFont()
         piano_label.setPointSize(6)
-        self.piano = QtGui.QGraphicsRectItem(0, 0, self.piano_width, self.piano_height)
+        self.piano = QtGui.QGraphicsRectItem(0, 0, piano_keys_width, self.piano_height)
         self.piano.setPos(0, self.header_height)
         self.addItem(self.piano)
 
-        key = PianoKeyItem(self.piano_width, self.note_height, self.piano)
+        key = PianoKeyItem(piano_keys_width, self.note_height, self.piano)
         label = QtGui.QGraphicsSimpleTextItem('C8', key)
         label.setPos(18, 1)
         label.setFont(piano_label)
@@ -460,20 +471,20 @@ class PianoRoll(QtGui.QGraphicsScene):
         for i in range(self.end_octave - self.start_octave, self.start_octave - self.start_octave, -1):
             for j in range(self.notes_in_octave, 0, -1):
                 if j in black_notes:
-                    key = PianoKeyItem(self.piano_width/1.4, self.note_height, self.piano)
+                    key = PianoKeyItem(piano_keys_width/1.4, self.note_height, self.piano)
                     key.setBrush(QtGui.QColor(0, 0, 0))
                     key.setZValue(1.0)
                     key.setPos(0, self.note_height * j + self.octave_height * (i - 1))
                 elif (j - 1) and (j + 1) in black_notes:
-                    key = PianoKeyItem(self.piano_width, self.note_height * 2, self.piano)
+                    key = PianoKeyItem(piano_keys_width, self.note_height * 2, self.piano)
                     key.setBrush(QtGui.QColor(255, 255, 255))
                     key.setPos(0, self.note_height * j + self.octave_height * (i - 1) - self.note_height/2.)
                 elif (j - 1) in black_notes:
-                    key = PianoKeyItem(self.piano_width, self.note_height * 3./2, self.piano)
+                    key = PianoKeyItem(piano_keys_width, self.note_height * 3./2, self.piano)
                     key.setBrush(QtGui.QColor(255, 255, 255))
                     key.setPos(0, self.note_height * j + self.octave_height * (i - 1) - self.note_height/2.)
                 elif (j + 1) in black_notes:
-                    key = PianoKeyItem(self.piano_width, self.note_height * 3./2, self.piano)
+                    key = PianoKeyItem(piano_keys_width, self.note_height * 3./2, self.piano)
                     key.setBrush(QtGui.QColor(255, 255, 255))
                     key.setPos(0, self.note_height * j + self.octave_height * (i - 1))
                 if j == 12:
@@ -485,12 +496,12 @@ class PianoRoll(QtGui.QGraphicsScene):
     def drawGrid(self):
         black_notes = [2,4,6,9,11]
         scale_bar = QtGui.QGraphicsRectItem(0, 0, self.grid_width, self.note_height, self.piano)
-        scale_bar.setPos(self.piano_width + self.padding, 0)
+        scale_bar.setPos(self.piano_width, 0)
         scale_bar.setBrush(QtGui.QColor(100,100,100))
         for i in range(self.end_octave - self.start_octave, self.start_octave - self.start_octave, -1):
             for j in range(self.notes_in_octave, 0, -1):
                 scale_bar = QtGui.QGraphicsRectItem(0, 0, self.grid_width, self.note_height, self.piano)
-                scale_bar.setPos(self.piano_width + self.padding, self.note_height * j + self.octave_height * (i - 1))
+                scale_bar.setPos(self.piano_width, self.note_height * j + self.octave_height * (i - 1))
                 clearpen = QtGui.QPen(QtGui.QColor(0,0,0,0))
                 scale_bar.setPen(clearpen)
                 if j not in black_notes:
@@ -530,10 +541,10 @@ class PianoRoll(QtGui.QGraphicsScene):
         for note in self.notes[:]:
             if note.note[1] >= (self.num_measures * self.time_sig[0]):
                 self.notes.remove(note)
-            elif note.note[2] > (self.num_measures * self.time_sig[0] / self.time_sig[1]):
+            elif note.note[2] > self.max_note_length:
                 new_note = note.note
                 self.notes.remove(note)
-                self.drawNote(new_note[0], new_note[1], self.num_measures * self.time_sig[0] / self.time_sig[1], new_note[3], False)
+                self.drawNote(new_note[0], new_note[1], self.max_note_length, new_note[3], False)
         map(self.addItem, self.notes)
         if self.views():
             self.views()[0].setSceneRect(self.itemsBoundingRect())
@@ -573,8 +584,8 @@ class PianoRoll(QtGui.QGraphicsScene):
         info = [note_num, note_start, note_length, note_velocity]
 
         x_start = self.get_note_x_start(note_start)
-        if note_length > self.time_sig[0] / self.time_sig[1] * self.num_measures:
-            note_length = self.time_sig[0] / self.time_sig[1] * self.num_measures + 0.25
+        if note_length > self.max_note_length:
+            note_length = self.max_note_length + 0.25
         x_length = self.get_note_x_length(note_length)
         y_pos = self.get_note_y_pos(note_num)
 
@@ -601,8 +612,8 @@ class PianoRoll(QtGui.QGraphicsScene):
 
     def snap(self, pos_x, pos_y = None):
         if self.snap_value:
-            pos_x = int(round((pos_x - self.piano_keys_width) / self.snap_value)) \
-                    * self.snap_value + self.piano_keys_width
+            pos_x = int(round((pos_x - self.piano_width) / self.snap_value)) \
+                    * self.snap_value + self.piano_width
         if pos_y:
             pos_y = int((pos_y - self.header_height) / self.note_height) \
                     * self.note_height + self.header_height
@@ -624,21 +635,22 @@ class PianoRoll(QtGui.QGraphicsScene):
         self.ghost_rect.setRight(m_new_x)
         self.ghost_note.setRect(self.ghost_rect)
 
+
     def enforce_bounds(self, pos):
-        if pos.x() < self.piano_width + self.padding:
-            pos.setX(self.piano_width + self.padding)
-        elif pos.x() > self.grid_width + self.piano_width + self.padding:
-            pos.setX(self.grid_width + self.piano_width + self.padding)
+        if pos.x() < self.piano_width:
+            pos.setX(self.piano_width)
+        elif pos.x() > self.grid_width + self.piano_width:
+            pos.setX(self.grid_width + self.piano_width)
         if pos.y() < self.header_height + self.padding:
             pos.setY(self.header_height + self.padding)
         return pos
 
     def get_note_start_from_x(self, note_x):
-        return (note_x - self.piano_width - self.padding) / (self.grid_width / self.num_measures / self.time_sig[0])
+        return (note_x - self.piano_width) / (self.grid_width / self.num_measures / self.time_sig[0])
 
 
     def get_note_x_start(self, note_start):
-        return self.piano_width + self.padding + \
+        return self.piano_width + \
                 (self.grid_width / self.num_measures / self.time_sig[0]) * note_start
 
     def get_note_x_length(self, note_length):
