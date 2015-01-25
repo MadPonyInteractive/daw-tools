@@ -5,6 +5,43 @@ A piano roll viewer/editor
 
 from PyQt4 import QtGui, QtCore
 
+class Expander(QtGui.QGraphicsRectItem):
+    def __init__(self, length, height, parent):
+        QtGui.QGraphicsRectItem.__init__(self, 0, 0, length, height, parent)
+        self.parent = parent
+        self.setFlag(QtGui.QGraphicsItem.ItemSendsGeometryChanges)
+        self.setAcceptHoverEvents(True)
+
+        clearpen = QtGui.QPen(QtGui.QColor(0,0,0,0))
+        self.setPen(clearpen)
+
+        self.orig_brush = QtGui.QColor(0, 0, 0, 0)
+        self.hover_brush = QtGui.QColor(200, 200, 200)
+        self.stretch = False
+        
+    def mousePressEvent(self, event):
+        QtGui.QGraphicsRectItem.mousePressEvent(self, event)
+        self.stretch = True
+
+    def hoverEnterEvent(self, event):
+        QtGui.QGraphicsRectItem.hoverEnterEvent(self, event)
+        if self.parent.isSelected():
+            self.parent.setBrush(self.parent.select_brush)
+        else:
+            self.parent.setBrush(self.parent.orig_brush)
+        self.setBrush(self.hover_brush)
+
+    def hoverLeaveEvent(self, event):
+        QtGui.QGraphicsRectItem.hoverLeaveEvent(self, event)
+        if self.parent.isSelected():
+            self.parent.setBrush(self.parent.select_brush)
+        elif self.parent.hovering:
+            self.parent.setBrush(self.parent.hover_brush)
+        else:
+            self.parent.setBrush(self.parent.orig_brush)
+        self.setBrush(self.orig_brush)
+
+
 class NoteItem(QtGui.QGraphicsRectItem):
     '''a note on the pianoroll sequencer'''
     def __init__(self, height, length, note_info):
@@ -17,16 +54,24 @@ class NoteItem(QtGui.QGraphicsRectItem):
 
         clearpen = QtGui.QPen(QtGui.QColor(0,0,0,0))
         self.setPen(clearpen)
-        self.o_brush = QtGui.QColor(100, 0, 0)
+        self.orig_brush = QtGui.QColor(100, 0, 0)
         self.hover_brush = QtGui.QColor(200, 200, 100)
-        self.s_brush = QtGui.QColor(200, 100, 100)
-        self.setBrush(self.o_brush)
+        self.select_brush = QtGui.QColor(200, 100, 100)
+        self.setBrush(self.orig_brush)
             
         self.note = note_info
+        self.length = length
         self.piano = self.scene
 
         self.pressed = False
+        self.hovering = False
         self.moving_diff = False
+        self.expand_diff = False
+
+        l = 5
+        self.front = Expander(l, height, self)
+        self.back = Expander(l, height, self)
+        self.back.setPos(length - l, 0)
 
     def paint(self, painter, option, widget=None):
         paint_option = option
@@ -35,20 +80,22 @@ class NoteItem(QtGui.QGraphicsRectItem):
 
     def setSelected(self, boolean):
         QtGui.QGraphicsRectItem.setSelected(self, boolean)
-        if boolean: self.setBrush(self.s_brush)
-        else: self.setBrush(self.o_brush)
+        if boolean: self.setBrush(self.select_brush)
+        else: self.setBrush(self.orig_brush)
 
     def hoverEnterEvent(self, event):
+        self.hovering = True
         QtGui.QGraphicsRectItem.hoverEnterEvent(self, event)
         if not self.isSelected():
             self.setBrush(self.hover_brush)
 
     def hoverLeaveEvent(self, event):
+        self.hovering = False
         QtGui.QGraphicsRectItem.hoverLeaveEvent(self, event)
         if not self.isSelected():
-            self.setBrush(self.o_brush)
+            self.setBrush(self.orig_brush)
         elif self.isSelected():
-            self.setBrush(self.s_brush)
+            self.setBrush(self.select_brush)
 
     def mousePressEvent(self, event):
         QtGui.QGraphicsRectItem.mousePressEvent(self, event)
@@ -60,25 +107,56 @@ class NoteItem(QtGui.QGraphicsRectItem):
 
     def moveEvent(self, event):
         offset = event.scenePos() - event.lastScenePos()
-        self.move_pos = self.scenePos() + offset
-        if self.moving_diff:
-            self.move_pos +=  QtCore.QPointF(self.moving_diff[0],self.moving_diff[1])
-        pos = self.piano().enforce_bounds(self.move_pos)
-        pos_x, pos_y = pos.x(), pos.y()
-        pos_sx, pos_sy = self.piano().snap(pos_x, pos_y)
-        self.moving_diff = (pos_x-pos_sx, pos_y-pos_sy)
-        self.setPos(pos_sx, pos_sy)
+
+        if self.back.stretch:
+            self.expand(self.back, offset)
+            self.updateNoteInfo(self.scenePos().x(), self.scenePos().y())
+        else:
+            self.move_pos = self.scenePos() + offset 
+            if self.moving_diff:
+                self.move_pos +=  QtCore.QPointF(self.moving_diff[0],self.moving_diff[1])
+            pos = self.piano().enforce_bounds(self.move_pos)
+            pos_x, pos_y = pos.x(), pos.y()
+            pos_sx, pos_sy = self.piano().snap(pos_x, pos_y)
+            self.moving_diff = (pos_x-pos_sx, pos_y-pos_sy)
+            if self.front.stretch:
+                self.expand(self.front, offset)
+                self.setPos(pos_sx, self.scenePos().y())
+                self.updateNoteInfo(pos_sx, self.scenePos().y())
+            else:
+                self.setPos(pos_sx, pos_sy)
+
+    def expand(self, rectItem, offset):
+        rect = self.rect()
+        if rectItem == self.back: right = rect.right() + offset.x()
+        else: right = rect.right() - offset.x()
+        if self.expand_diff:
+            right +=  self.expand_diff
+        pos = self.piano().enforce_bounds(QtCore.QPointF(right, 0))
+        new_x = self.piano().snap(pos.x()) - 2.75 # where does this number come from?!
+        self.expand_diff = pos.x() - new_x
+        self.back.setPos(new_x - 5, 0)
+        rect.setRight(new_x)
+        self.setRect(rect)
+    
+    def updateNoteInfo(self, pos_x, pos_y):
+            self.note[0] = self.piano().get_note_num_from_y(pos_y)
+            self.note[1] = self.piano().get_note_start_from_x(pos_x)
+            self.note[2] = self.piano().get_note_length_from_x(
+                    self.rect().right() - self.rect().left())
+            print("note: {}".format(self.note))
 
     def mouseReleaseEvent(self, event):
         QtGui.QGraphicsRectItem.mouseReleaseEvent(self, event)
         self.pressed = False
         if event.button() == QtCore.Qt.LeftButton:
             self.moving_diff = False
+            self.expand_diff = False
+            self.back.stretch = False
+            self.front.stretch = False
             (pos_x, pos_y,) = self.piano().snap(self.pos().x(), self.pos().y())
             self.setPos(pos_x, pos_y)
-            self.note[1] = self.piano().get_note_start_from_x(pos_x)
-            self.note[0] = self.piano().get_note_num_from_y(pos_y)
-            print("note: {}".format(self.note))
+            self.updateNoteInfo(pos_x, pos_y)
 
 class PianoKeyItem(QtGui.QGraphicsRectItem):
     def __init__(self, width, height, parent):
@@ -94,7 +172,7 @@ class PianoKeyItem(QtGui.QGraphicsRectItem):
 
     def hoverEnterEvent(self, event):
         QtGui.QGraphicsRectItem.hoverEnterEvent(self, event)
-        self.o_brush = self.brush()
+        self.orig_brush = self.brush()
         self.setBrush(self.hover_brush)
 
     def hoverLeaveEvent(self, event):
@@ -102,7 +180,7 @@ class PianoKeyItem(QtGui.QGraphicsRectItem):
             self.pressed = False
             self.setBrush(self.hover_brush)
         QtGui.QGraphicsRectItem.hoverLeaveEvent(self, event)
-        self.setBrush(self.o_brush)
+        self.setBrush(self.orig_brush)
 
     #def mousePressEvent(self, event):
     #    self.pressed = True
@@ -329,7 +407,14 @@ class PianoRoll(QtGui.QGraphicsScene):
 
                 elif not self.marquee_select: #move selected
                     if QtCore.Qt.LeftButton == event.buttons():
+                        x = y = False
+                        if any(note.back.stretch for note in self.selected_notes):
+                            x = True
+                        elif any(note.front.stretch for note in self.selected_notes):
+                            y = True
                         for note in self.selected_notes:
+                            note.back.stretch = x 
+                            note.front.stretch = y
                             note.moveEvent(event)
 
     def mouseReleaseEvent(self, event):
@@ -516,7 +601,7 @@ class PianoRoll(QtGui.QGraphicsScene):
 
     def snap(self, pos_x, pos_y = None):
         if self.snap_value:
-            pos_x = int((pos_x - self.piano_keys_width) / self.snap_value) \
+            pos_x = int(round((pos_x - self.piano_keys_width) / self.snap_value)) \
                     * self.snap_value + self.piano_keys_width
         if pos_y:
             pos_y = int((pos_y - self.header_height) / self.note_height) \
@@ -589,7 +674,7 @@ class PianoRollView(QtGui.QGraphicsView):
 
     def setZoomX(self, scale_x):
         self.setTransform(self.o_transform)
-        self.zoom_x = 1 + scale_x / float(99)
+        self.zoom_x = 1 + scale_x / float(99) * 2
         self.scale(self.zoom_x, self.zoom_y)
 
     def setZoomY(self, scale_y):
@@ -674,7 +759,7 @@ class MainWindow(QtGui.QWidget):
         hBox.addWidget(hSlider)
 
         viewBox = QtGui.QHBoxLayout()
-        #viewBox.addWidget(vSlider)
+        viewBox.addWidget(vSlider)
         viewBox.addWidget(view)
         viewBox.setSpacing(0)
         viewBox.setMargin(0)
@@ -694,9 +779,9 @@ if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     main = MainWindow()
     main.show()
-    main.piano.drawNote(72, 0, 0.25, 20)
-    main.piano.drawNote(73, 1, 0.25, 20)
-    main.piano.drawNote(74, 2, 0.25, 20)
-    main.piano.drawNote(75, 3, 0.25, 20)
-    main.piano.drawNote(76, 4, 0.25, 20)
+    main.piano.drawNote(71, 0, 0.50, 20)
+    main.piano.drawNote(73, 1, 0.50, 20)
+    main.piano.drawNote(75, 2, 0.50, 20)
+    main.piano.drawNote(77, 3, 0.50, 20)
+    main.piano.drawNote(79, 4, 0.50, 20)
     sys.exit(app.exec_())

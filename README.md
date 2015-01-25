@@ -10,7 +10,7 @@ TODO/WISHLIST
 * quantization is confusing for nonstandard note lengths
 * fix bounds enforcement and errors
 * implement loop-around-from-beginning notes
-* implement changing note length (front and back)
+* make front-changing note-length better
 * disable ghost note and insertion when hovering over the piano and existing notes
 * refine the rest of the UI (e.g. auto escape comboboxes)
 * start making keyboard shorcuts
