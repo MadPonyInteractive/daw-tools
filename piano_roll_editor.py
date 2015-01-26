@@ -41,6 +41,11 @@ class NoteExpander(QtGui.QGraphicsRectItem):
             self.parent.setBrush(self.parent.orig_brush)
         self.setBrush(self.orig_brush)
 
+class NoteWrap(QtGui.QGraphicsRectItem):
+    def __init__(self, length, height, parent):
+        QtGui.QGraphicsRectItem.__init__(self, 0, 0, length, height, parent)
+        self.parent = parent
+
 class NoteItem(QtGui.QGraphicsRectItem):
     '''a note on the pianoroll sequencer'''
     def __init__(self, height, length, note_info):
@@ -255,14 +260,34 @@ class PianoRoll(QtGui.QGraphicsScene):
         self.grid_div = 0
         self.piano = None
         self.header = None
+        self.play_head = None
 
         self.setTimeSig(time_sig)
         self.setMeasures(num_measures)
         self.setGridDiv()
         self.default_length = 1. / self.grid_div
 
+
     # -------------------------------------------------------------------------
     # Callbacks
+
+    def genTransport(self, pos):
+        print pos
+        bar, pos = pos / (1920*int(self.time_sig[0])), pos % (1920*int(self.time_sig[0]))
+        beat, tick = pos / 1920, pos % 1920
+        print "{} | {} | {}".format(bar, beat, tick)
+        transport_info = {
+                "bar": bar,
+                "beat": beat,
+                "tick": tick,
+                }
+        self.movePlayHead(transport_info)
+
+    def movePlayHead(self, t):
+        total_duration = 1920 * self.time_sig[0] * self.num_measures 
+        pos = t['bar']*1920*self.time_sig[0] + t['beat']*1920 + t['tick']
+        frac = (pos % total_duration) / total_duration
+        self.play_head.setPos(QtCore.QPointF(frac * self.grid_width, 0))
 
     def setTimeSig(self, time_sig):
         try:
@@ -498,21 +523,20 @@ class PianoRoll(QtGui.QGraphicsScene):
         scale_bar = QtGui.QGraphicsRectItem(0, 0, self.grid_width, self.note_height, self.piano)
         scale_bar.setPos(self.piano_width, 0)
         scale_bar.setBrush(QtGui.QColor(100,100,100))
+        clearpen = QtGui.QPen(QtGui.QColor(0,0,0,0))
         for i in range(self.end_octave - self.start_octave, self.start_octave - self.start_octave, -1):
             for j in range(self.notes_in_octave, 0, -1):
                 scale_bar = QtGui.QGraphicsRectItem(0, 0, self.grid_width, self.note_height, self.piano)
                 scale_bar.setPos(self.piano_width, self.note_height * j + self.octave_height * (i - 1))
-                clearpen = QtGui.QPen(QtGui.QColor(0,0,0,0))
                 scale_bar.setPen(clearpen)
                 if j not in black_notes:
                     scale_bar.setBrush(QtGui.QColor(120,120,120))
                 else:
                     scale_bar.setBrush(QtGui.QColor(100,100,100))
 
-        measure_pen = QtGui.QPen()
-        measure_pen.setWidth(1)
-        line_pen = QtGui.QPen()
-        line_pen.setColor(QtGui.QColor(0, 0, 0, 40))
+        measure_pen = QtGui.QPen(QtGui.QColor(0, 0, 0, 120), 3)
+        half_measure_pen = QtGui.QPen(QtGui.QColor(0, 0, 0, 40), 2)
+        line_pen = QtGui.QPen(QtGui.QColor(0, 0, 0, 40))
         for i in range(0, int(self.num_measures) + 1):
             measure = QtGui.QGraphicsLineItem(0, 0, 0, self.piano_height + self.header_height - measure_pen.width(), self.header)
             measure.setPos(self.measure_width * i, 0.5 * measure_pen.width())
@@ -526,9 +550,15 @@ class PianoRoll(QtGui.QGraphicsScene):
                     line.setZValue(1.0)
                     line.setPos(self.measure_width * i + self.value_width * j, self.header_height)
                     if j == self.time_sig[0]*self.grid_div/self.time_sig[1] / 2.0:
-                        line.setLine(0, 0, 0, self.piano_height)
+                        line.setPen(half_measure_pen)
                     else:
                         line.setPen(line_pen)
+
+    def drawPlayHead(self):
+        self.play_head = QtGui.QGraphicsLineItem(self.piano_width, self.header_height, self.piano_width, self.total_height) 
+        self.play_head.setPen(QtGui.QPen(QtGui.QColor(255,255,255,50), 2))
+        self.play_head.setZValue(1.)
+        self.addItem(self.play_head)
 
     def refreshScene(self):
         map(self.removeItem, self.notes)
@@ -538,6 +568,7 @@ class PianoRoll(QtGui.QGraphicsScene):
         self.drawPiano()
         self.drawHeader()
         self.drawGrid()
+        self.drawPlayHead()
         for note in self.notes[:]:
             if note.note[1] >= (self.num_measures * self.time_sig[0]):
                 self.notes.remove(note)
@@ -700,62 +731,61 @@ class MainWindow(QtGui.QWidget):
         time_sig = '6/4'
         view = PianoRollView(
                 time_sig = '6/4',
-                num_measures = 5,
+                num_measures = 3,
                 quantize_val = '1/8')
 
         self.piano = view.piano
 
-        timeSigLabel = QtGui.QLabel(QtCore.QString('time signature'))
+        timeSigLabel = QtGui.QLabel('time signature')
         timeSigLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignCenter)
         timeSigLabel.setMaximumWidth(100)
         timeSigBox = QtGui.QComboBox()
         timeSigBox.setEditable(True)
         timeSigBox.setMaximumWidth(100)
-        timeSigBox.addItems( map(QtCore.QString,
-            ('1/4', '2/4', '3/4', '4/4', '5/4', '6/4', '12/8')))
+        timeSigBox.addItems(('1/4', '2/4', '3/4', '4/4', '5/4', '6/4', '12/8'))
         timeSigBox.setCurrentIndex(5)
 
-        measureLabel = QtGui.QLabel(QtCore.QString('measures'))
+        measureLabel = QtGui.QLabel('measures')
         measureLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignCenter)
         measureLabel.setMaximumWidth(100)
         measureBox = QtGui.QComboBox()
         measureBox.setMaximumWidth(100)
-        measureBox.addItems( map(QtCore.QString, map(str, range(1,17))))
+        measureBox.addItems( map(str, range(1,17)))
         measureBox.setCurrentIndex(4)
 
-        defaultLengthLabel = QtGui.QLabel(QtCore.QString('default length'))
+        defaultLengthLabel = QtGui.QLabel('default length')
         defaultLengthLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignCenter)
         defaultLengthLabel.setMaximumWidth(100)
         defaultLengthBox = QtGui.QComboBox()
         defaultLengthBox.setEditable(True)
         defaultLengthBox.setMaximumWidth(100)
-        defaultLengthBox.addItems( map(QtCore.QString,
-                    ('1/16', '1/15', '1/12', '1/9', '1/8', '1/6', '1/4', '1/3', '1/2', '1')))
+        defaultLengthBox.addItems(('1/16', '1/15', '1/12', '1/9', '1/8', '1/6', '1/4', '1/3', '1/2', '1'))
         defaultLengthBox.setCurrentIndex(4)
 
-        quantizeLabel = QtGui.QLabel(QtCore.QString('quantize'))
+        quantizeLabel = QtGui.QLabel('quantize')
         quantizeLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignCenter)
         quantizeLabel.setMaximumWidth(100)
         quantizeBox = QtGui.QComboBox()
         quantizeBox.setEditable(True)
         quantizeBox.setMaximumWidth(100)
-        quantizeBox.addItems( map(QtCore.QString,
-                    ('0', '1/16', '1/15', '1/12', '1/9', '1/8', '1/6', '1/4', '1/3', '1/2', '1')))
+        quantizeBox.addItems(('0', '1/16', '1/15', '1/12', '1/9', '1/8', '1/6', '1/4', '1/3', '1/2', '1'))
         quantizeBox.setCurrentIndex(5)
 
         hSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
         hSlider.setTracking(True)
+        hSlider.setMaximum(1920*6*3*4)
 
         vSlider = QtGui.QSlider(QtCore.Qt.Vertical)
         vSlider.setTracking(True)
         vSlider.setInvertedAppearance(True)
         vSlider.setMaximumHeight(500)
 
-        timeSigBox.currentIndexChanged[QtCore.QString].connect(view.piano.setTimeSig)
-        measureBox.currentIndexChanged[QtCore.QString].connect(view.piano.setMeasures)
-        defaultLengthBox.currentIndexChanged[QtCore.QString].connect(view.piano.setDefaultLength)
-        quantizeBox.currentIndexChanged[QtCore.QString].connect(view.piano.setGridDiv)
-        hSlider.valueChanged.connect(view.setZoomX)
+        timeSigBox.currentIndexChanged[str].connect(view.piano.setTimeSig)
+        measureBox.currentIndexChanged[str].connect(view.piano.setMeasures)
+        defaultLengthBox.currentIndexChanged[str].connect(view.piano.setDefaultLength)
+        quantizeBox.currentIndexChanged[str].connect(view.piano.setGridDiv)
+        #hSlider.valueChanged.connect(view.setZoomX)
+        hSlider.valueChanged.connect(view.piano.genTransport)
         vSlider.valueChanged.connect(view.setZoomY)
 
         hBox = QtGui.QHBoxLayout()

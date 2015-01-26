@@ -7,7 +7,7 @@ one intention is to be used in [Carla](https://github.com/falkTX/Carla) as a sta
 
 TODO/WISHLIST
 -------------
-* quantization is confusing for nonstandard note lengths
+* quantization is confusing for nonstandard note lengths / doesn't always seem to work
 * implement loop-around-from-beginning notes
 * disable ghost note and insertion when hovering over the piano and existing notes
 * refine the rest of the UI (e.g. auto escape comboboxes)
