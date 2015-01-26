@@ -170,6 +170,18 @@ class NoteItem(QtGui.QGraphicsRectItem):
             self.setPos(pos_x, pos_y)
             self.updateNoteInfo(pos_x, pos_y)
 
+    def updateVelocity(self, event):
+        offset = event.scenePos().x() - event.lastScenePos().x()
+        self.note[3] += int(offset/5)
+        if self.note[3] > 127:
+            self.note[3] = 127
+        elif self.note[3] < 0:
+            self.note[3] = 0
+        print("new vel: {}".format(self.note[3]))
+        self.orig_brush = QColor(self.note[3], 0, 0)
+        self.select_brush = QColor(self.note[3] + 100, 100, 100)
+        self.setBrush(self.orig_brush)
+
 class PianoKeyItem(QtGui.QGraphicsRectItem):
     def __init__(self, width, height, parent):
         QtGui.QGraphicsRectItem.__init__(self, 0, 0, width, height, parent)
@@ -209,6 +221,10 @@ class PianoKeyItem(QtGui.QGraphicsRectItem):
 
 class PianoRoll(QtGui.QGraphicsScene):
     '''the piano roll'''
+
+    measureupdate = QtCore.pyqtSignal(int)
+    modeupdate = QtCore.pyqtSignal(str)
+
     def __init__(self, time_sig = '4/4', num_measures = 4, quantize_val = '1/8'):
         QtGui.QGraphicsScene.__init__(self)
         self.setBackgroundBrush(QtGui.QColor(50, 50, 50))
@@ -220,6 +236,7 @@ class PianoRoll(QtGui.QGraphicsScene):
 
         self.marquee_select = False
         self.insert_mode = False
+        self.velocity_mode = False
         self.place_ghost = False
         self.ghost_note = None
         self.default_ghost_vel = 100
@@ -316,7 +333,7 @@ class PianoRoll(QtGui.QGraphicsScene):
             v = map(float, length.split('/'))
             if len(v) < 3:
                 self.default_length = \
-                        1 if len(v)==1 else \
+                        v[0] if len(v)==1 else \
                         v[0] / v[1]
                 pos = self.enforce_bounds(self.mousePos)
                 if self.insert_mode: self.makeGhostNote(pos.x(), pos.y())
@@ -356,6 +373,7 @@ class PianoRoll(QtGui.QGraphicsScene):
         QtGui.QGraphicsScene.keyPressEvent(self, event)
         if event.key() == QtCore.Qt.Key_B:
             if not self.insert_mode:
+                self.velocity_mode = False
                 self.insert_mode = True
                 self.makeGhostNote(self.mousePos.x(), self.mousePos.y())
             elif self.insert_mode:
@@ -363,9 +381,31 @@ class PianoRoll(QtGui.QGraphicsScene):
                 if self.place_ghost: self.place_ghost = False
                 self.removeItem(self.ghost_note)
                 self.ghost_note = None
-        if event.key() in (QtCore.Qt.Key_Delete, QtCore.Qt.Key_Backspace):
+        elif event.key() == Qt.Key_D:
+            if self.velocity_mode:
+                self.velocity_mode = False
+            else:
+                if self.insert_mode:
+                    self.removeItem(self.ghost_note)
+                self.ghost_note = None
+                self.insert_mode = False
+                self.place_ghost = False
+                self.velocity_mode = True
+        elif event.key() == Qt.Key_A:
+            if all((note.isSelected() for note in self.notes)):
+                for note in self.notes:
+                    note.setSelected(False)
+                self.selected_notes = []
+            else:
+                for note in self.notes:
+                    note.setSelected(True)
+                self.selected_notes = self.notes[:]
+        elif event.key() in (Qt.Key_Delete, Qt.Key_Backspace):
             self.notes = [note for note in self.notes if note not in self.selected_notes]
-            map(self.removeItem, self.selected_notes)
+            for note in self.selected_notes:
+                self.removeItem(note)
+                del note
+            self.selected_notes = []
 
     def mousePressEvent(self, event):
         QtGui.QGraphicsScene.mousePressEvent(self, event)
@@ -394,7 +434,8 @@ class PianoRoll(QtGui.QGraphicsScene):
                     self.selected_notes = [s_note]
                     break
             for note in self.selected_notes:
-                note.mousePressEvent(event)
+                if not self.velocity_mode:
+                    note.mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
         QtGui.QGraphicsScene.mouseMoveEvent(self, event)
@@ -440,6 +481,11 @@ class PianoRoll(QtGui.QGraphicsScene):
                         if note in self.selected_notes: note.setSelected(True)
                         else: note.setSelected(False)
 
+                elif self.velocity_mode:
+                    if Qt.LeftButton == event.buttons():
+                        for note in self.selected_notes:
+                            note.updateVelocity(event)
+
                 elif not self.marquee_select: #move selected
                     if QtCore.Qt.LeftButton == event.buttons():
                         x = y = False
@@ -468,7 +514,8 @@ class PianoRoll(QtGui.QGraphicsScene):
         elif not self.marquee_select:
             for note in self.selected_notes:
                 note.mouseReleaseEvent(event)
-
+                if self.velocity_mode:
+                    note.setSelected(True)
     # -------------------------------------------------------------------------
     # Internal Functions
 
@@ -609,10 +656,13 @@ class PianoRoll(QtGui.QGraphicsScene):
         note_velocity: 0 - 127
         """
 
-        if not note_start % (self.num_measures * self.time_sig[0]) == note_start:
-            return None
-
         info = [note_num, note_start, note_length, note_velocity]
+
+        if not note_start % (self.num_measures * self.time_sig[0]) == note_start:
+            while not note_start % (self.num_measures * self.time_sig[0]) == note_start:
+                self.setMeasures(self.num_measures+1)
+            self.measureupdate.emit(self.num_measures)
+            self.refreshScene()
 
         x_start = self.get_note_x_start(note_start)
         if note_length > self.max_note_length:
@@ -622,9 +672,6 @@ class PianoRoll(QtGui.QGraphicsScene):
 
         note = NoteItem(self.note_height, x_length, info)
         note.setPos(x_start, y_pos)
-        #f_vel_opacity = QtGui.QGraphicsOpacityEffect()
-        #f_vel_opacity.setOpacity(note_velocity * 0.007874016 * 0.6 + 0.3)
-        #note.setGraphicsEffect(f_vel_opacity)
 
         self.notes.append(note)
         if add:
@@ -725,95 +772,127 @@ class PianoRollView(QtGui.QGraphicsView):
         self.zoom_y = 1 + scale_y / float(99)
         self.scale(self.zoom_x, self.zoom_y)
 
+class ModeIndicator(QtGui.QWidget):
+    def __init__(self):
+        QtGui.QWidget.__init__(self)
+        #self.setGeometry(0, 0, 30, 20)
+        self.setFixedSize(30,20)
+        self.mode = None
+
+    def paintEvent(self, event):
+        painter = QtGui.Painter()
+        painter.begin(self)
+        painter.setPen(QtGui.QPen(QtCore.QColor(0, 0, 0, 0)))
+        if self.mode == 'velocity_mode':
+            painter.setBrush(QtCore.QColor(127, 0, 0))
+        elif self.mode == 'insert_mode':
+            painter.setBrush(QtCore.QColor(0, 100, 127))
+        else:
+            painter.setBrush(QtCore.QColor(0, 0, 0, 0))
+        painter.drawRect(0, 0, 30, 20)
+        painter.end()
+
+    def changeMode(self, new_mode):
+        self.mode = new_mode
+        self.update()
+
+
 class MainWindow(QtGui.QWidget):
     def __init__(self):
         QtGui.QWidget.__init__(self)
-        time_sig = '6/4'
-        view = PianoRollView(
-                time_sig = '6/4',
-                num_measures = 3,
+
+        self.initUI()
+        self.piano.measureupdate.connect(self.updateMeasureBox)
+        self.piano.modeupdate.connect(self.modeIndicator.changeMode)
+
+    def initUI(self):
+        self.view = PianoRollView(
+                time_sig = "4/4",
+                num_measures = 4,
                 quantize_val = '1/8')
 
-        self.piano = view.piano
+        self.piano = self.view.piano
 
-        timeSigLabel = QtGui.QLabel('time signature')
-        timeSigLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignCenter)
-        timeSigLabel.setMaximumWidth(100)
-        timeSigBox = QtGui.QComboBox()
-        timeSigBox.setEditable(True)
-        timeSigBox.setMaximumWidth(100)
-        timeSigBox.addItems(('1/4', '2/4', '3/4', '4/4', '5/4', '6/4', '12/8'))
-        timeSigBox.setCurrentIndex(5)
+        self.timeSigLabel = QtGui.QLabel('time signature')
+        self.timeSigLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignCenter)
+        self.timeSigLabel.setMaximumWidth(100)
+        self.timeSigBox = QtGui.QComboBox()
+        self.timeSigBox.setEditable(True)
+        self.timeSigBox.setMaximumWidth(100)
+        self.timeSigBox.addItems(
+                ('1/4', '2/4', '3/4', '4/4', '5/4', '6/4', '12/8'))
+        self.timeSigBox.setCurrentIndex(3)
 
-        measureLabel = QtGui.QLabel('measures')
-        measureLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignCenter)
-        measureLabel.setMaximumWidth(100)
-        measureBox = QtGui.QComboBox()
-        measureBox.setMaximumWidth(100)
-        measureBox.addItems( map(str, range(1,17)))
-        measureBox.setCurrentIndex(4)
+        self.measureLabel = QtGui.QLabel('measures')
+        self.measureLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignCenter)
+        self.measureLabel.setMaximumWidth(100)
+        self.measureBox = QtGui.QComboBox()
+        self.measureBox.setMaximumWidth(100)
+        self.measureBox.addItems(list(map(str, range(1,17))))
+        self.measureBox.setCurrentIndex(3)
 
-        defaultLengthLabel = QtGui.QLabel('default length')
-        defaultLengthLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignCenter)
-        defaultLengthLabel.setMaximumWidth(100)
-        defaultLengthBox = QtGui.QComboBox()
-        defaultLengthBox.setEditable(True)
-        defaultLengthBox.setMaximumWidth(100)
-        defaultLengthBox.addItems(('1/16', '1/15', '1/12', '1/9', '1/8', '1/6', '1/4', '1/3', '1/2', '1'))
-        defaultLengthBox.setCurrentIndex(4)
+        self.defaultLengthLabel = QtGui.QLabel('default length')
+        self.defaultLengthLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignCenter)
+        self.defaultLengthLabel.setMaximumWidth(100)
+        self.defaultLengthBox = QtGui.QComboBox()
+        self.defaultLengthBox.setEditable(True)
+        self.defaultLengthBox.setMaximumWidth(100)
+        self.defaultLengthBox.addItems(('1/16', '1/15', '1/12', '1/9', '1/8', '1/6', '1/4', '1/3', '1/2', '1'))
+        self.defaultLengthBox.setCurrentIndex(4)
 
-        quantizeLabel = QtGui.QLabel('quantize')
-        quantizeLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignCenter)
-        quantizeLabel.setMaximumWidth(100)
-        quantizeBox = QtGui.QComboBox()
-        quantizeBox.setEditable(True)
-        quantizeBox.setMaximumWidth(100)
-        quantizeBox.addItems(('0', '1/16', '1/15', '1/12', '1/9', '1/8', '1/6', '1/4', '1/3', '1/2', '1'))
-        quantizeBox.setCurrentIndex(5)
+        self.quantizeLabel = QtGui.QLabel('quantize')
+        self.quantizeLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignCenter)
+        self.quantizeLabel.setMaximumWidth(100)
+        self.quantizeBox = QtGui.QComboBox()
+        self.quantizeBox.setEditable(True)
+        self.quantizeBox.setMaximumWidth(100)
+        self.quantizeBox.addItems(('0', '1/16', '1/15', '1/12', '1/9', '1/8', '1/6', '1/4', '1/3', '1/2', '1'))
+        self.quantizeBox.setCurrentIndex(5)
 
-        hSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
-        hSlider.setTracking(True)
-        hSlider.setMaximum(1920*6*3*4)
+        self.hSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
+        self.hSlider.setTracking(True)
+        #hSlider.setMaximum(1920*6*3*4)
 
-        vSlider = QtGui.QSlider(QtCore.Qt.Vertical)
-        vSlider.setTracking(True)
-        vSlider.setInvertedAppearance(True)
-        vSlider.setMaximumHeight(500)
+        self.vSlider = QtGui.QSlider(QtCore.Qt.Vertical)
+        self.vSlider.setTracking(True)
+        self.vSlider.setInvertedAppearance(True)
+        self.vSlider.setMaximumHeight(500)
 
-        timeSigBox.currentIndexChanged[str].connect(view.piano.setTimeSig)
-        measureBox.currentIndexChanged[str].connect(view.piano.setMeasures)
-        defaultLengthBox.currentIndexChanged[str].connect(view.piano.setDefaultLength)
-        quantizeBox.currentIndexChanged[str].connect(view.piano.setGridDiv)
-        #hSlider.valueChanged.connect(view.setZoomX)
-        hSlider.valueChanged.connect(view.piano.genTransport)
-        vSlider.valueChanged.connect(view.setZoomY)
+        self.modeIndicator = ModeIndicator()
 
-        hBox = QtGui.QHBoxLayout()
+        self.timeSigBox.currentIndexChanged[str].connect(self.piano.setTimeSig)
+        self.measureBox.currentIndexChanged[str].connect(self.piano.setMeasures)
+        self.defaultLengthBox.currentIndexChanged[str].connect(self.piano.setDefaultLength)
+        self.quantizeBox.currentIndexChanged[str].connect(self.piano.setGridDiv)
+        self.hSlider.valueChanged.connect(self.view.setZoomX)
+        self.vSlider.valueChanged.connect(self.view.setZoomY)
 
-        hBox.addWidget(timeSigLabel)
-        hBox.addWidget(timeSigBox)
-        hBox.addWidget(measureLabel)
-        hBox.addWidget(measureBox)
-        hBox.addWidget(defaultLengthLabel)
-        hBox.addWidget(defaultLengthBox)
-        hBox.addWidget(quantizeLabel)
-        hBox.addWidget(quantizeBox)
-        hBox.addWidget(hSlider)
+        self.hBox = QtGui.QHBoxLayout()
 
-        viewBox = QtGui.QHBoxLayout()
-        viewBox.addWidget(vSlider)
-        viewBox.addWidget(view)
-        viewBox.setSpacing(0)
-        viewBox.setMargin(0)
-        viewBox.setContentsMargins(0,0,0,0)
-        
-        layout = QtGui.QVBoxLayout()
+        self.hBox.addWidget(self.modeIndicator)
+        self.hBox.addWidget(self.timeSigLabel)
+        self.hBox.addWidget(self.timeSigBox)
+        self.hBox.addWidget(self.measureLabel)
+        self.hBox.addWidget(self.measureBox)
+        self.hBox.addWidget(self.defaultLengthLabel)
+        self.hBox.addWidget(self.defaultLengthBox)
+        self.hBox.addWidget(self.quantizeLabel)
+        self.hBox.addWidget(self.quantizeBox)
+        self.hBox.addWidget(self.hSlider)
 
-        layout.addLayout(hBox)
-        layout.addLayout(viewBox)
+        self.viewBox = QtGui.QHBoxLayout()
+        self.viewBox.addWidget(self.vSlider)
+        self.viewBox.addWidget(self.view)
+        self.layout = QtGui.QVBoxLayout()
 
-        self.setLayout(layout)
-        view.setFocus()
+        self.layout.addLayout(self.hBox)
+        self.layout.addLayout(self.viewBox)
+
+        self.setLayout(self.layout)
+        self.view.setFocus()
+
+    def updateMeasureBox(self, index):
+        self.measureBox.setCurrentIndex(index-1)
 
 if __name__ == '__main__':
     import sys
