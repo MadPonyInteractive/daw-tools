@@ -1,56 +1,58 @@
-"""
-A viewer for all audio items in the song.
-"""
-import sys
-from PyQt4 import QtGui, QtCore
-colors = [QtCore.Qt.blue,
- QtCore.Qt.green,
- QtCore.Qt.red,
- QtCore.Qt.yellow]
+'''
+Based on and credit to: https://github.com/rhetr/seq-gui
 
-class timeline_item(QtGui.QGraphicsRectItem):
+- A basic timeline
+
+'''
+import sys
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
+colors = [Qt.blue, Qt.green, Qt.red, Qt.yellow]
+
+class timeline_item(QGraphicsRectItem):
     def __init__(self, a_length, a_height, a_name, a_track_num, a_y_pos):
-        QtGui.QGraphicsRectItem.__init__(self, 0, 0, a_length, a_height)
-        self.label = QtGui.QGraphicsSimpleTextItem(a_name, parent=self)
+        QGraphicsRectItem.__init__(self, 0, 0, a_length, a_height)
+        self.label = QGraphicsSimpleTextItem(a_name, parent=self)
         self.label.setPos(10, 5)
-        self.label.setBrush(QtCore.Qt.white)
-        self.label.setFlag(QtGui.QGraphicsItem.ItemIgnoresTransformations)
-        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
-        self.setFlag(QtGui.QGraphicsItem.ItemSendsGeometryChanges)
+        self.label.setBrush(Qt.white)
+        self.label.setFlag(QGraphicsItem.ItemIgnoresTransformations)
+        self.setFlag(QGraphicsItem.ItemIsMovable)
+        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         self.track_num = a_track_num
         self.mouse_y_pos = a_y_pos
 
     def mouseDoubleClickEvent(self, a_event):
-        QtGui.QGraphicsRectItem.mouseDoubleClickEvent(self, a_event)
-        print "Here's where we'll open the item properties dialog for track " + str(self.track_num)
+        # QGraphicsRectItem.mouseDoubleClickEvent(self, a_event)
+        print ("Here's where we'll open the item properties dialog for track " + str(self.track_num))
 
     def mousePressEvent(self, a_event):
-        QtGui.QGraphicsRectItem.mousePressEvent(self, a_event)
-        self.setGraphicsEffect(QtGui.QGraphicsOpacityEffect())
+        # QGraphicsRectItem.mousePressEvent(self, a_event)
+        self.setGraphicsEffect(QGraphicsOpacityEffect())
 
     def mouseMoveEvent(self, a_event):
-        QtGui.QGraphicsRectItem.mouseMoveEvent(self, a_event)
+        QGraphicsRectItem.mouseMoveEvent(self, a_event)
         f_pos = self.pos().x()
         if f_pos < 0:
             f_pos = 0
         self.setPos(f_pos, self.mouse_y_pos)
 
     def mouseReleaseEvent(self, a_event):
-        QtGui.QGraphicsRectItem.mouseReleaseEvent(self, a_event)
+        # QGraphicsRectItem.mouseReleaseEvent(self, a_event)
         self.setGraphicsEffect(None)
         f_pos_x = self.pos().x()
         self.setPos(f_pos_x, self.mouse_y_pos)
-        print str(f_pos_x)
+        print (str(f_pos_x))
 
-class timeline(QtGui.QGraphicsView):
+class timeline(QGraphicsView):
     def __init__(self, a_item_length = 4, a_region_length = 8, a_bpm = 140.0, a_px_per_region = 100, total_tracks = 5, total_regions = 300):
         self.item_length = float(a_item_length)
         self.region_length = float(a_region_length)
-        QtGui.QGraphicsView.__init__(self)
-        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.scene = QtGui.QGraphicsScene(self)
-        self.scene.setBackgroundBrush(QtGui.QColor(90, 90, 90))
+        QGraphicsView.__init__(self)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scene = QGraphicsScene(self)
+        self.scene.setBackgroundBrush(QColor(90, 90, 90))
         self.setScene(self.scene)
         self.audio_items = []
         self.track = 0
@@ -80,18 +82,18 @@ class timeline(QtGui.QGraphicsView):
         return a_track_seconds * self.regions_per_second
 
     def draw_headers(self):
-        f_header = QtGui.QGraphicsRectItem(0, 0, self.viewer_size, self.header_height)
+        f_header = QGraphicsRectItem(0, 0, self.viewer_size, self.header_height)
         self.scene.addItem(f_header)
         for i in range(0, self.total_regions):
-            f_number = QtGui.QGraphicsSimpleTextItem('%d' % i, f_header)
-            f_number.setFlag(QtGui.QGraphicsItem.ItemIgnoresTransformations)
+            f_number = QGraphicsSimpleTextItem('%d' % i, f_header)
+            f_number.setFlag(QGraphicsItem.ItemIgnoresTransformations)
             f_number.setPos(self.px_per_region * i, 2)
-            f_number.setBrush(QtCore.Qt.white)
+            f_number.setBrush(Qt.white)
 
     def draw_grid(self):
-        f_pen = QtGui.QPen()
+        f_pen = QPen()
         for i in range(1, self.total_tracks + 1):
-            f_line = QtGui.QGraphicsLineItem(0, 0, self.viewer_size, 0)
+            f_line = QGraphicsLineItem(0, 0, self.viewer_size, 0)
             f_line.setPos(0, self.header_height + self.padding + self.item_height * i)
             self.scene.addItem(f_line)
 
@@ -129,9 +131,9 @@ class timeline(QtGui.QGraphicsView):
         self.track += 1
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
-    view = timeline(total_tracks=5)
-    for i in range(5):
+    app = QApplication(sys.argv)
+    view = timeline(total_tracks=8)
+    for i in range(8):
         view.draw_item_musical_time(0, 0, 0, i + 1, 0, 0, 120, 'Item-' + str(i), i)
 
     view.set_zoom(2.0)
