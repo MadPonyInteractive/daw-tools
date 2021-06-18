@@ -8,11 +8,23 @@ The initial aim is to provide PyQt/PySide widgets to aid on daw type projects.
 
 Current widgets work but are under development and need a lot of work.
 
+
+
 CURRENT WIDGETS
 ---------------
 * Piano Roll
+
+![piano_roll](https://user-images.githubusercontent.com/30872066/122611228-db5ead00-d078-11eb-8678-571a2a7754eb.png)
 * Envelope Editor
+
+![Envelope](https://user-images.githubusercontent.com/30872066/122611627-8e2f0b00-d079-11eb-81fa-a340c0b7a997.png)
 * Timeline
+
+![timeline](https://user-images.githubusercontent.com/30872066/122611648-971fdc80-d079-11eb-80e2-85a475aa0793.png)
+
+
+
+
 
 FUTURE INTERGRATIONS
 --------------------
@@ -23,6 +35,8 @@ FUTURE INTERGRATIONS
 
 ### Audio Engine (maybe py-audio or pyo)
 * Ability to record/import/export audio files
+
+
 
 
 REASON
