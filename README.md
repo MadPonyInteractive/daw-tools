@@ -6,7 +6,7 @@ This project was initially forked from [seq-gui](https://github.com/rhetr/seq-gu
 The project is build for PySide 6 users.
 The initial aim is to provide PyQt/PySide widgets to aid on daw type projects.
 
-Currenct widgets work but are under development and need a lot of work.
+Current widgets work but are under development and need a lot of work.
 
 CURRENT WIDGETS
 ---------------
