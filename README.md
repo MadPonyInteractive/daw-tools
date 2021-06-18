@@ -1,29 +1,40 @@
-seq-gui
+daw-tools
 =======
 
-Three PyQt components that could be useful if you wanted to make a midi/audio sequencer. it's a work in progress so it's pretty unrefined but the basics are sort of there. 
+This project was initially forked from [seq-gui](https://github.com/rhetr/seq-gui)
 
-one intention is to be used in [Carla](https://github.com/falkTX/Carla) as a standalone single-loop sequencer (work is being done on that)
+The project is build for PySide 6 users.
+The initial aim is to provide PyQt/PySide widgets to aid on daw type projects.
 
-TODO/WISHLIST
--------------
-* quantization is confusing for nonstandard note lengths / doesn't always seem to work
-* implement loop-around-from-beginning notes
-* disable ghost note and insertion when hovering over the piano and existing notes
-* refine the rest of the UI (e.g. auto escape comboboxes)
-* start making keyboard shorcuts
-* anchor piano and measure indicator
+Currenct widgets work but are under development and need a lot of work.
 
-WON'T GET DONE FOR A WHILE (but would be nice eventually)
----------------------------------------------------------
-### piano
-* cut, copy, paste
-* undo/redo
-* velocity editor
-* pitchbend (will be overlayed envelope)
-* fix piano playing
+CURRENT WIDGETS
+---------------
+* Piano Roll
+* Envelope Editor
+* Timeline
 
-### envelope
-* marquee, basically c/p the stuff done in the pianoroll
-* change behavior so it's easier to make sawtooths
-* clicking the line selects the two points it connects
+FUTURE INTERGRATIONS
+--------------------
+### Midi Engine (maybe mingus)
+* Ability to play/import/export midi files
+* Chord and Melody generation
+* Arpeggiator
+
+### Audio Engine (maybe py-audio or pyo)
+* Ability to record/import/export audio files
+
+
+REASON
+------
+I've been producing/composing/mixing music for over 20 years and programming for 10.
+
+I decided to move forward with a little project I long been dreaming of for music composition and came across seq-gui.
+I found seq-gui very interesting and decided to fork it as it had not been updated for 7 years.
+
+The industry standard for building audio applications seems to be [JUCE](https://juce.com/) at the moment.
+But JUCE uses C++, a language that makes me physically ill just looking at it :D
+
+Considering my idea does not need all the intricacies that JUCE offers, I'm going with python.
+
+Will keep updating this project when possible
