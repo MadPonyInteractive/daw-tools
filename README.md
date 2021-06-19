@@ -3,10 +3,16 @@ daw-tools
 
 This project was initially forked from [seq-gui](https://github.com/rhetr/seq-gui)
 
-The project is build for PySide 6 users.
 The initial aim is to provide PyQt/PySide widgets to aid on daw type projects.
 
-Current widgets work but are under development and need a lot of work.
+The project is build using PySide but can easly be ported to PyQt.
+
+
+Current Versions and dependencies
+* Python Version 3.9
+* PySide Version 6.0.3
+
+! Current widgets are functional but are under development and still need a lot of work.
 
 
 
