@@ -949,8 +949,8 @@ class widget(QWidget):
         self.hBox.addWidget(self.defaultLengthLabel)
         self.hBox.addWidget(self.defaultLengthBox)
         self.hBox.addWidget(self.quantizeLabel)
+        self.hBox.addWidget(self.quantizeBox)
 
-        self.hBox.addWidget(self.checkBtn)
         self.hBox.addWidget(self.hSlider)
 
         self.viewBox = QHBoxLayout()
