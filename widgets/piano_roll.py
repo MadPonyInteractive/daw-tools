@@ -2,7 +2,7 @@
 Based on and credit to: https://github.com/rhetr/seq-gui
 - A midi note editable piano roll
 '''
-from PySide6.QtCore import Qt, Signal, QPointF, QRectF
+from PySide6.QtCore import Qt, Signal, QPointF, QRectF, QTimer
 from PySide6.QtGui import QColor, QPen, QFont, QPainter
 from PySide6.QtWidgets import (
     QGraphicsView,
@@ -209,7 +209,7 @@ class PianoKeyItem(QGraphicsRectItem):
         self.pressed = False
 
     def hoverEnterEvent(self, event):
-        # QGraphicsRectItem.hoverEnterEvent(self, event)
+        QGraphicsRectItem.hoverEnterEvent(self, event)
         self.orig_brush = self.brush()
         self.setBrush(self.hover_brush)
 
@@ -217,7 +217,7 @@ class PianoKeyItem(QGraphicsRectItem):
         if self.pressed:
             self.pressed = False
             self.setBrush(self.hover_brush)
-        # QGraphicsRectItem.hoverLeaveEvent(self, event)
+        QGraphicsRectItem.hoverLeaveEvent(self, event)
         self.setBrush(self.orig_brush)
 
     def mousePressEvent(self, event):
@@ -226,12 +226,13 @@ class PianoKeyItem(QGraphicsRectItem):
 
     def mouseMoveEvent(self, event):
         """this may eventually do something"""
+        QGraphicsRectItem.mouseMoveEvent(self, event)
         pass
 
     def mouseReleaseEvent(self, event):
         print('Entered')
         self.pressed = False
-        # QGraphicsRectItem.mouseReleaseEvent(self, event)
+        QGraphicsRectItem.mouseReleaseEvent(self, event)
         self.setBrush(self.hover_brush)
 
 class PianoRoll(QGraphicsScene):
@@ -297,9 +298,8 @@ class PianoRoll(QGraphicsScene):
 
         self.setTimeSig(time_sig)
         self.setMeasures(num_measures)
-        self.setGridDiv()
+        # self.setGridDiv()
         self.default_length = 1. / self.grid_div
-
 
     # -------------------------------------------------------------------------
     # Callbacks
@@ -337,13 +337,11 @@ class PianoRoll(QGraphicsScene):
 
     def setMeasures(self, measures):
         try:
-            print('setting measures')
             self.num_measures = float(measures)
             self.max_note_length = self.num_measures * self.time_sig[0]/self.time_sig[1]
             self.grid_width = self.measure_width * self.num_measures
             self.refreshScene()
         except:
-            print('measures not set')
             pass
 
     def setDefaultLength(self, box):
@@ -394,6 +392,7 @@ class PianoRoll(QGraphicsScene):
 
     def keyPressEvent(self, event):
         QGraphicsScene.keyPressEvent(self, event)
+        # Add note mode
         if event.key() == Qt.Key_B:
             if not self.insert_mode:
                 self.velocity_mode = False
@@ -404,6 +403,7 @@ class PianoRoll(QGraphicsScene):
                 if self.place_ghost: self.place_ghost = False
                 self.removeItem(self.ghost_note)
                 self.ghost_note = None
+        # Velocity control mode
         elif event.key() == Qt.Key_D:
             if self.velocity_mode:
                 self.velocity_mode = False
@@ -414,6 +414,7 @@ class PianoRoll(QGraphicsScene):
                 self.insert_mode = False
                 self.place_ghost = False
                 self.velocity_mode = True
+        # Select all notes
         elif event.key() == Qt.Key_A:
             if all((note.isSelected() for note in self.notes)):
                 for note in self.notes:
@@ -423,6 +424,7 @@ class PianoRoll(QGraphicsScene):
                 for note in self.notes:
                     note.setSelected(True)
                 self.selected_notes = self.notes[:]
+        # Delete selected notes
         elif event.key() in (Qt.Key_Delete, Qt.Key_Backspace):
             self.notes = [note for note in self.notes if note not in self.selected_notes]
             for note in self.selected_notes:
@@ -541,13 +543,30 @@ class PianoRoll(QGraphicsScene):
                 note.mouseReleaseEvent(event)
                 if self.velocity_mode:
                     note.setSelected(True)
+
+    # def wheelEvent(self, event):
+        # print(event)
+        # QGraphicsScene.wheelEvent(self, event)
+        # event.ignore()
+        # print(self.piano.scene().views()[0].viewportTransform())
+        # print(event.scenePos().x())
+        # self.piano.setX(abs(self.piano.scene().views()[0].viewportTransform().dx()))
+
+        # print( event.scenePos().x() )
+        # self.piano.moveBy(self.start_x,0)
+        # self.start_x = event.scenePos().x()-self.piano.x()
+
+        # self.piano.update()
+
     # -------------------------------------------------------------------------
     # Internal Functions
 
     def drawHeader(self):
+        # Children: Grid Vertical Lines | Grid Text
         self.header = QGraphicsRectItem(0, 0, self.grid_width, self.header_height)
-        #self.header.setZValue(1.0)
+        # self.header.setZValue(1.0)
         self.header.setPos(self.piano_width, 0)
+        self.header.setBrush(QColor(50, 50, 50))
         self.addItem(self.header)
 
     def drawPiano(self):
@@ -557,9 +576,10 @@ class PianoRoll(QGraphicsScene):
         piano_label = QFont()
         piano_label.setPointSize(6)
         self.piano = QGraphicsRectItem(0, 0, piano_keys_width, self.piano_height)
+        # Children: Keys | Grid Horizontal boxes
         self.piano.setPos(0, self.header_height)
         self.addItem(self.piano)
-
+        # return
         key = PianoKeyItem(piano_keys_width, self.note_height, self.piano)
         label = QGraphicsSimpleTextItem('C8', key)
         label.setPos(18, 1)
@@ -570,19 +590,22 @@ class PianoRoll(QGraphicsScene):
                 if j in black_notes:
                     key = PianoKeyItem(piano_keys_width/1.4, self.note_height, self.piano)
                     key.setBrush(QColor(0, 0, 0))
-                    key.setZValue(1.0)
+                    key.setZValue(2.0)
                     key.setPos(0, self.note_height * j + self.octave_height * (i - 1))
                 elif (j - 1) and (j + 1) in black_notes:
                     key = PianoKeyItem(piano_keys_width, self.note_height * 2, self.piano)
                     key.setBrush(QColor(255, 255, 255))
+                    key.setZValue(1.0)
                     key.setPos(0, self.note_height * j + self.octave_height * (i - 1) - self.note_height/2.)
                 elif (j - 1) in black_notes:
                     key = PianoKeyItem(piano_keys_width, self.note_height * 3./2, self.piano)
                     key.setBrush(QColor(255, 255, 255))
+                    key.setZValue(1.0)
                     key.setPos(0, self.note_height * j + self.octave_height * (i - 1) - self.note_height/2.)
                 elif (j + 1) in black_notes:
                     key = PianoKeyItem(piano_keys_width, self.note_height * 3./2, self.piano)
                     key.setBrush(QColor(255, 255, 255))
+                    key.setZValue(1.0)
                     key.setPos(0, self.note_height * j + self.octave_height * (i - 1))
                 if j == 12:
                     label = QGraphicsSimpleTextItem('{}{}'.format(labels[j - 1], self.end_octave - i), key )
@@ -590,27 +613,38 @@ class PianoRoll(QGraphicsScene):
                     label.setFont(piano_label)
                 self.piano_keys.append(key)
 
-    def drawGrid(self):
+    def drawBoxes(self):
         black_notes = [2,4,6,9,11]
-        scale_bar = QGraphicsRectItem(0, 0, self.grid_width, self.note_height, self.piano)
-        scale_bar.setPos(self.piano_width, 0)
-        scale_bar.setBrush(QColor(100,100,100))
+        # Horizontal boxes
+        box_container = QGraphicsRectItem(0, 0, self.grid_width, self.header_height)
+        box_container.setPos(self.piano_width, 0)
+        self.addItem(box_container)
+        scale_bar = QGraphicsRectItem(0, 0, self.grid_width, self.note_height, box_container)
+        # scale_bar.setZValue(-1)
+        scale_bar.setFlag(QGraphicsRectItem.ItemStacksBehindParent )
+        scale_bar.setPos(0,self.header_height)
+        scale_bar.setBrush(QColor(120,120,120))
         clearpen = QPen(QColor(0,0,0,0))
-        # Horizontal lines
         for i in range(self.end_octave - self.start_octave, self.start_octave - self.start_octave, -1):
             for j in range(self.notes_in_octave, 0, -1):
-                scale_bar = QGraphicsRectItem(0, 0, self.grid_width, self.note_height, self.piano)
-                scale_bar.setPos(self.piano_width, self.note_height * j + self.octave_height * (i - 1))
+                scale_bar = QGraphicsRectItem(0, 0, self.grid_width, self.note_height, box_container)
+                # scale_bar.setZValue(-1)
+                # scale_bar.setFlag(QGraphicsRectItem.ItemStacksBehindParent)
+                scale_bar.setPos(0, self.header_height+(self.note_height * j + self.octave_height * (i - 1)))
                 scale_bar.setPen(clearpen)
                 if j not in black_notes:
                     scale_bar.setBrush(QColor(120,120,120))
                 else:
                     scale_bar.setBrush(QColor(100,100,100))
 
+    def drawGrid(self):
+        box_container = QGraphicsRectItem(0, 0, self.grid_width, self.header_height)
+        box_container.setPos(self.piano_width, 0)
+        self.addItem(box_container)
+        # Vertical lines
         measure_pen = QPen(QColor(0, 0, 0, 120), 3)
         half_measure_pen = QPen(QColor(0, 0, 0, 40), 2)
         line_pen = QPen(QColor(0, 0, 0, 40))
-        # Vertical lines
         for i in range(0, int(self.num_measures) + 1):
             measure = QGraphicsLineItem(0, 0, 0, self.piano_height + self.header_height - measure_pen.width(), self.header)
             measure.setPos(self.measure_width * i, 0.5 * measure_pen.width())
@@ -621,7 +655,6 @@ class PianoRoll(QGraphicsScene):
                 number.setBrush(Qt.white)
                 for j in self.frange(0, self.time_sig[0]*self.grid_div/self.time_sig[1], 1.):
                     line = QGraphicsLineItem(0, 0, 0, self.piano_height, self.header)
-                    line.setZValue(1.0)
                     line.setPos(self.measure_width * i + self.value_width * j, self.header_height)
                     if j == self.time_sig[0]*self.grid_div/self.time_sig[1] / 2.0:
                         line.setPen(half_measure_pen)
@@ -630,33 +663,29 @@ class PianoRoll(QGraphicsScene):
 
     def drawPlayHead(self):
         self.play_head = QGraphicsLineItem(self.piano_width, self.header_height, self.piano_width, self.total_height)
-        self.play_head.setPen(QPen(QColor(255,255,255,50), 2))
-        self.play_head.setZValue(1.)
+        self.play_head.setPen(QPen(QColor(255,255,255,50), 3))
+        self.play_head.setZValue(2.0)
         self.addItem(self.play_head)
 
-    def checkNotes(self):
-        try:
-            print('Notes:',len(self.notes_info))
-            for note in self.notes_info:print(note)
-        except:
-            print('No notes')
-
     def refreshScene(self):
+        print('Refreshing')
         self.notes.clear()
         self.selected_notes = []
         self.piano_keys = []
 
         self.clear()
-        self.drawPiano()
+        self.drawBoxes()
+
+        # Draw notes
+        r = len(self.notes_info)
+        for i in range(r):
+            self.drawNoteInfo(self.notes_info[i])
+
         self.drawHeader()
         self.drawGrid()
         self.drawPlayHead()
 
-        r = len(self.notes_info)
-        for i in range(r):
-            print('in')
-            self.drawNoteInfo(self.notes_info[i])
-
+        self.drawPiano()
         if self.views():
             self.views()[0].setSceneRect(self.itemsBoundingRect())
 
@@ -710,6 +739,7 @@ class PianoRoll(QGraphicsScene):
         self.add_note_info(info)
         if add:
             self.addItem(note)
+            # note.setParentItem(self.header)
 
     def removeNotesInfoDuplicates(self):
         original = self.notes_info
@@ -810,12 +840,14 @@ class PianoRoll(QGraphicsScene):
         return float(self.time_sig[0]) / self.time_sig[1] * self.num_measures / self.grid_width \
                 * note_x
 
-
     def get_note_y_pos(self, note_num):
         return self.header_height + self.note_height * (self.total_notes - note_num - 1)
 
     def get_note_num_from_y(self, note_y_pos):
         return -(((note_y_pos - self.header_height) / self.note_height) - self.total_notes + 1)
+
+def map_val(val,in_start,in_end,out_start,out_end):
+    return out_start + ((out_end - out_start) / (in_end - in_start)) * (val - in_start)
 
 class PianoRollView(QGraphicsView):
     def __init__(self, time_sig = '4/4', num_measures = 4, quantize_val = '1/8'):
@@ -823,30 +855,42 @@ class PianoRollView(QGraphicsView):
         self.piano = PianoRoll(time_sig, num_measures, quantize_val)
         self.setScene(self.piano)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-        x = 0   * self.sceneRect().width() + self.sceneRect().left()
-        y = 0.4 * self.sceneRect().height() + self.sceneRect().top()
-        self.centerOn(x, y)
-
-        self.setAlignment(Qt.AlignLeft)
-        self.o_transform = self.transform()
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.zoom_x = 1
         self.zoom_y = 1
+        self.setPos(0,0)
+
+    def setPos(self, x, y):
+        _x = x * self.sceneRect().width() + self.sceneRect().left()
+        _y = y * self.sceneRect().height() + self.sceneRect().top()
+        self.centerOn(_x, _y)
+
+    def keep_in_place(self):
+        sceneRect = self.mapToScene(self.rect()).boundingRect()# visible rect
+        self.piano.piano.setX(sceneRect.x())
+        self.piano.header.setY(sceneRect.y())
+
+    def wheelEvent(self, event):
+        QGraphicsView.wheelEvent(self, event)
+        self.keep_in_place()
 
     def setZoomX(self, scale_x):
-        self.setTransform(self.o_transform)
-        self.zoom_x = 1 + scale_x / float(99) * 2
+        self.resetTransform()
+        self.zoom_x = scale_x * 0.01
         self.scale(self.zoom_x, self.zoom_y)
+        self.keep_in_place()
 
     def setZoomY(self, scale_y):
-        self.setTransform(self.o_transform)
-        self.zoom_y = 1 + scale_y / float(99)
+        self.resetTransform()
+        self.zoom_y = scale_y * 0.01
         self.scale(self.zoom_x, self.zoom_y)
+        self.keep_in_place()
 
 class ModeIndicator(QWidget):
     def __init__(self):
         QWidget.__init__(self)
-        #self.setGeometry(0, 0, 30, 20)
+        # self.setGeometry(0, 0, 30, 20)
         self.setFixedSize(30,20)
         self.mode = None
 
@@ -875,13 +919,16 @@ class widget(QWidget):
         self.piano.measureupdate.connect(self.updateMeasureBox)
         self.piano.modeupdate.connect(self.modeIndicator.changeMode)
 
+        QTimer.singleShot(1000,self.piano.refreshScene)
+
     def initUI(self):
         self.view = PianoRollView(
                 time_sig = "4/4",
-                num_measures = 4,
+                num_measures = 8,
                 quantize_val = '1/8')
 
         self.piano = self.view.piano
+        self.setMaximumWidth(1000)
 
         self.timeSigLabel = QLabel('time signature')
         self.timeSigLabel.setAlignment(Qt.AlignRight | Qt.AlignCenter)
@@ -922,12 +969,17 @@ class widget(QWidget):
 
         self.hSlider = QSlider(Qt.Horizontal)
         self.hSlider.setTracking(True)
-        #hSlider.setMaximum(1920*6*3*4)
+        self.hSlider.setMinimum(10)
+        self.hSlider.setMaximum(100)
+        self.hSlider.setValue(100)
 
         self.vSlider = QSlider(Qt.Vertical)
         self.vSlider.setTracking(True)
         self.vSlider.setInvertedAppearance(True)
         self.vSlider.setMaximumHeight(500)
+        self.vSlider.setMinimum(10)
+        self.vSlider.setMaximum(100)
+        self.vSlider.setValue(100)
 
         self.modeIndicator = ModeIndicator()
 
