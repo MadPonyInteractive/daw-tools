@@ -61,7 +61,7 @@ ROAD MAP
 * Envelope with dials
 * Mixer Channel
 * Mixer
-
+* Step Sequencer
 
 
 REASON
