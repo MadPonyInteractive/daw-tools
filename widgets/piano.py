@@ -252,7 +252,7 @@ class VerticalPianoScene(QGraphicsScene):
         ## piano dimensions
         self.note_height = 50
         self.octave_height = 7 * self.note_height
-        self.height = (self.octave_height * 10) + self.note_height
+        self.height = (self.octave_height * 10) + (self.note_height*5)
         self.width = 100
         self.setSceneRect(0,0,self.width,self.height)
         self.drawPiano()
@@ -263,7 +263,7 @@ class VerticalPianoScene(QGraphicsScene):
         self.container.setPos(0, 0)
         self.addItem(self.container)
         pos = 0
-        for i in range(120,-1,-1):
+        for i in range(127,-1,-1):
             note_name = mf.get_note_name(i)
             note_width = keys_width
             note_height = self.note_height
@@ -313,7 +313,7 @@ class HorizontalPianoScene(QGraphicsScene):
         ## piano dimensions
         self.note_width = 50
         self.octave_w = 7 * self.note_width
-        self.width = (self.octave_w * 10) + self.note_width
+        self.width = (self.octave_w * 10) + (self.note_width*5)
         self.height = 100
         self.setSceneRect(0,0,self.width,self.height)
         self.drawPiano()
@@ -324,7 +324,7 @@ class HorizontalPianoScene(QGraphicsScene):
         self.container.setPos(0, 0)
         self.addItem(self.container)
         pos = 0
-        for i in range(121):
+        for i in range(128):
             note_name = mf.get_note_name(i)
             note_h = keys_h
             note_w = self.note_width
