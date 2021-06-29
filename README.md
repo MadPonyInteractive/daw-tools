@@ -1,5 +1,5 @@
 daw-tools
-=======
+=========
 
 This project was initially forked from [seq-gui](https://github.com/rhetr/seq-gui)
 
@@ -12,9 +12,16 @@ Current Versions and dependencies
 * Python Version 3.9
 * PySide Version 6.0.3
 
-! Current widgets are functional but are under development and still need a lot of work.
 
+USAGE
+=====
+Add daw_tools directory to your python project
 
+`import daw_tools`
+
+`piano = daw_tools.Piano()`
+
+Example files for each widget will be added soon!
 
 CURRENT WIDGETS
 ---------------
@@ -33,13 +40,13 @@ A piano widget to integrate in piano rolls, instruments, etc
 
 ![image](https://user-images.githubusercontent.com/30872066/123536227-03a57600-d721-11eb-91f6-cbd80afbc5a3.png)
 ![image](https://user-images.githubusercontent.com/30872066/123536241-13bd5580-d721-11eb-93e5-e97aad3926da.png)
-### PIANO ROLL
+### PIANO ROLL (Under Construction)
 
 ![piano_roll](https://user-images.githubusercontent.com/30872066/122611228-db5ead00-d078-11eb-8678-571a2a7754eb.png)
-### GRAPHICAL ENVELOPE
+### GRAPHICAL ENVELOPE (Under Construction)
 
 ![Envelope](https://user-images.githubusercontent.com/30872066/122611627-8e2f0b00-d079-11eb-81fa-a340c0b7a997.png)
-### TIMELINE
+### TIMELINE (Under Construction)
 
 ![timeline](https://user-images.githubusercontent.com/30872066/122611648-971fdc80-d079-11eb-80e2-85a475aa0793.png)
 
