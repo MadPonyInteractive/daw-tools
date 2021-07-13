@@ -1,6 +1,12 @@
 '''
 A piano widget to integrate in piano rolls, instruments, etc
 
+Key Shortcuts and interaction
+- Scroll     = Mouse Wheel or Up/Down/Left/Right/Page Up/Down/Home/End
+- Scale      = Mouse Wheel + Control Modifier
+- Press Key  = LMB
+- Piano Roll = LMB + Mouse move
+
 Features
     * Custom ScrollBar and Zoom Slider for easy integration with other widgets
     * Set a scale and all keys not in scale will be locked
@@ -11,13 +17,17 @@ Features
     * Black or white keyboard
     * Note tool tips
     * And more...
-
-    Warning: music_functions.py needs to be in same directory as this file
 '''
-from PySide6.QtCore import *
-from PySide6.QtGui import *
-from PySide6.QtWidgets import *
-import music_functions as mf
+if __name__ == '__main__':
+    from PySide6.QtCore import *
+    from PySide6.QtGui import *
+    from PySide6.QtWidgets import *
+    import music_functions as mf
+else:
+    try:
+        from . main import *
+    except:
+        from main import *
 
 class PianoKeyItem(QGraphicsRectItem):
     def __init__(self, width, height, note_number, parent, isHorizontal=False):
@@ -26,7 +36,7 @@ class PianoKeyItem(QGraphicsRectItem):
         self.width = width
         self.height = height
         self.padding = 2
-        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
+        # self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         self.setAcceptHoverEvents(True)
         self.colors = {
             'hover' : QColor(200, 0, 0),
@@ -361,7 +371,7 @@ class HorizontalPianoScene(QGraphicsScene):
     def key_enter(self,key):
         self.views()[0].key_enter(key)
 
-class widget(QGraphicsView):
+class Piano(QGraphicsView):
     pressed = Signal(dict)
     unPressed = Signal(dict)
     enter = Signal(dict)
@@ -508,12 +518,12 @@ class widget(QGraphicsView):
     # Events #################################################
     def setVelocity(self,key,event):
         if self.isHorizontal:
-            key.velocity = min(int(mf.map_val(event.pos().y(),0,key.height*.8,0,127)),127)
+            key.velocity = min(int(mf.map_val(event.position().y(),0,key.height*.8,0,127)),127)
         else:
-            key.velocity = min(int(mf.map_val(event.pos().x(),0,key.width*.6,0,127)),127)
+            key.velocity = min(int(mf.map_val(event.position().x(),0,key.width*.6,0,127)),127)
 
     def getKeyUnderMouse(self, event):
-        key =  self.itemAt(event.pos())
+        key =  self.itemAt(event.position().x(),event.position().y())
         # Check if key or key text
         if 'QGraphicsSimpleTextItem' in str(type(key)):
             key = key.parentItem()
@@ -535,7 +545,7 @@ class widget(QGraphicsView):
         if (event.type()==QEvent.MouseButtonDblClick):
             self.mousePressEvent(event)
             event.accept()
-        return super(widget, self).event(event)
+        return super(Piano, self).event(event)
 
     def mouseLeave(self):
         if self.hovered:
@@ -620,12 +630,12 @@ class widget(QGraphicsView):
 # It is only present for example purposes
 #   when loading the file by it self
 if __name__ == '__main__':
-    class main_widget(QWidget):
+    class main_Piano(QWidget):
         def __init__(self,orientation,parent):
             QWidget.__init__(self)
 
-            # Adding the widget
-            self.piano = widget(orientation)
+            # Adding the Piano
+            self.piano = Piano(orientation)
 
             self.isHorizontal = True if orientation == 'horizontal' else False
 
@@ -909,14 +919,14 @@ if __name__ == '__main__':
             box.addItems(['horizontal','vertical'])
             l.addWidget(box)
 
-            self.mainWidget=main_widget('horizontal',self)
+            self.mainWidget=main_Piano('horizontal',self)
             self.mainWidget.show()
             l.addWidget(self.mainWidget)
             self.mainWidget.show()
 
             def changeWidget(i):
                 self.mainWidget.setParent(None)
-                self.mainWidget=main_widget(i,self)
+                self.mainWidget=main_Piano(i,self)
                 l.addWidget(self.mainWidget)
                 self.mainWidget.show()
             box.currentTextChanged.connect(changeWidget)
@@ -926,4 +936,5 @@ if __name__ == '__main__':
     app = QApplication([])
     mainWindow = main_window()
     mainWindow.show()
-    exit(app.exec_())
+    exit(app.exec())
+

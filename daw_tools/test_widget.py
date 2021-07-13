@@ -1,6 +1,7 @@
-from PySide6.QtCore import *
-from PySide6.QtGui import *
-from PySide6.QtWidgets import *
+from PySide6.QtCore import QRect, QRectF
+from PySide6.QtGui import QColor
+from PySide6.QtWidgets import QGraphicsView, QGraphicsScene, QGraphicsEllipseItem
+# from . main import *
 
 class widget(QGraphicsView):
     def __init__(self):

@@ -2,15 +2,22 @@
 Based on and credit to: https://github.com/rhetr/seq-gui
 - A graphical envelope editor
 """
-import sys
-from PySide6.QtCore import *
-from PySide6.QtGui import *
-from PySide6.QtWidgets import *
-
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QColor, QPen
+from PySide6.QtWidgets import (
+    QGraphicsView,
+    QGraphicsScene,
+    QGraphicsRectItem,
+    QGraphicsSimpleTextItem,
+    QGraphicsItem,
+    QGraphicsLineItem,
+    QGraphicsEllipseItem,
+    QGraphicsOpacityEffect
+)
 global_points = []
 global_axes_size = 28
 #global_max_start_time = 999.0
-global_viewer_width = 1000
+global_viewer_width = 600
 global_viewer_height = 300
 
 class envelope_item(QGraphicsEllipseItem):
@@ -83,7 +90,7 @@ class envelope_item(QGraphicsEllipseItem):
         QGraphicsEllipseItem.mouseReleaseEvent(self, a_event)
         self.setGraphicsEffect(None)
 
-class envelope_editor(QGraphicsView):
+class widget(QGraphicsView):
     '''the envelope editor'''
     def __init__(self, a_item_length = 4, a_grid_div = 16):
         self.item_length = float(a_item_length)
@@ -247,11 +254,12 @@ class envelope_editor(QGraphicsView):
         self.connect_points()
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    view = envelope_editor()
-    view.draw_point(2, 127)
-    view.draw_point(3, 64)
-    view.draw_point(0, 0)
-    view.draw_point(1, 54)
-    view.show()
-    sys.exit(app.exec_())
+    from PySide6.QtWidgets import QApplication
+    app = QApplication([])
+    envelope = widget()
+    envelope.draw_point(2, 127)
+    envelope.draw_point(3, 64)
+    envelope.draw_point(0, 0)
+    envelope.draw_point(1, 54)
+    envelope.show()
+    exit(app.exec_())
