@@ -1,8 +1,6 @@
 daw-tools
 =========
 
-This project was initially forked from [seq-gui](https://github.com/rhetr/seq-gui)
-
 The initial aim is to provide PyQt/PySide widgets to aid on daw type projects.
 
 The project is build using PySide but can easly be ported to PyQt.
@@ -10,7 +8,7 @@ The project is build using PySide but can easly be ported to PyQt.
 
 Current Versions and dependencies
 * Python Version 3.9
-* PySide Version 6.0.3
+* PySide Version 6.1.2
 
 
 USAGE
@@ -40,31 +38,26 @@ A piano widget to integrate in piano rolls, instruments, etc
 
 ![image](https://user-images.githubusercontent.com/30872066/123536227-03a57600-d721-11eb-91f6-cbd80afbc5a3.png)
 ![image](https://user-images.githubusercontent.com/30872066/123536241-13bd5580-d721-11eb-93e5-e97aad3926da.png)
-### PIANO ROLL (Under Construction)
+### SLIDERS
 
-![piano_roll](https://user-images.githubusercontent.com/30872066/122611228-db5ead00-d078-11eb-8678-571a2a7754eb.png)
-### GRAPHICAL ENVELOPE (Under Construction)
+![image](https://user-images.githubusercontent.com/30872066/125504194-06eb83b4-fa54-430a-802c-5e93294bf629.png)
 
-![Envelope](https://user-images.githubusercontent.com/30872066/122611627-8e2f0b00-d079-11eb-81fa-a340c0b7a997.png)
-### TIMELINE (Under Construction)
+### XYPad
 
-![timeline](https://user-images.githubusercontent.com/30872066/122611648-971fdc80-d079-11eb-80e2-85a475aa0793.png)
+![image](https://user-images.githubusercontent.com/30872066/125504251-0ec78d4f-466b-4936-a2e5-e20c69e77b6b.png)
 
-
+### More under construction and added soon...
 
 
 
 ROAD MAP
 --------
-### Make piano roll modular
-* Break piano, note editor and playhead into separate widgets for better reusability
-
-### Improvements 
-* Improve Piano Roll
-* Improve Envelope
-* Improve Timeline
 
 ### Future Widgets
+* Piano Roll
+* Envelope
+* Timeline
+* Transpose
 * Envelope with dials
 * Mixer Channel
 * Mixer
