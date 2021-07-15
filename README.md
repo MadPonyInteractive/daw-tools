@@ -3,7 +3,7 @@ daw-tools
 
 The initial aim is to provide PyQt/PySide widgets to aid on daw type projects.
 
-The project is build using PySide but can easly be ported to PyQt.
+The project is build using PySide but can easly be ported to PyQt by editing main.py imports.
 
 
 Current Versions and dependencies
@@ -19,7 +19,14 @@ Add daw_tools directory to your python project
 
 `piano = daw_tools.Piano()`
 
-Example files for each widget will be added soon!
+All the files in the top level folder are examples of how to use the already finished widgets.
+
+
+
+At the moment each file in the daw-tools folder has an embeded example for development ease, 
+this makes the library quite big in size and it will be removed as the library matures 
+and the examples are all moved to the top level folder.
+
 
 CURRENT WIDGETS
 ---------------
