@@ -30,6 +30,10 @@ and the examples are all moved to the top level folder.
 
 CURRENT WIDGETS
 ---------------
+### LINEAR ENVELOPE
+![image](https://user-images.githubusercontent.com/30872066/126156507-dcee3b27-6de8-4b98-a32a-bbde0b1b2237.png)
+
+
 ### PIANO
 A piano widget to integrate in piano rolls, instruments, etc
 
@@ -62,10 +66,9 @@ ROAD MAP
 
 ### Future Widgets
 * Piano Roll
-* Envelope
+* Envelope with curves
 * Timeline
 * Transpose
-* Envelope with dials
 * Mixer Channel
 * Mixer
 * Step Sequencer
