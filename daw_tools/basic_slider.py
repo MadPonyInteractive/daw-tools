@@ -4,7 +4,12 @@ Basic Slider
 
     ! Example at the end of the module
 
-    TODO if needed: Wheel and Keyboard Events
+    Interaction
+        * Mouse Wheel increases/decreases value
+        * Mouse Wheel + Control = Corse = 2x less precision
+        * Mouse Wheel + Shift   = Fine  = 2x more precision
+
+    TODO if needed: Keyboard Events
     TODO if needed: Steps
 '''
 if __name__ == '__main__':
@@ -68,8 +73,6 @@ class BasicSlider(QWidget):
         painter.setPen(self.pen)
         painter.setBrush(self.brush)
 
-        # radiusX = self.radius*.5 if self.fixRadiusX else self.radius
-        # radiusY = self.radius*.5 if self.fixRadiusY else self.radius
         if self.isH:
             fillRect = QRect(
                 self.fillRect.x(),
@@ -143,6 +146,27 @@ class BasicSlider(QWidget):
         self.finishedEditting.emit(self.percentage)
         QWidget.mouseReleaseEvent(self, event)
 
+    def normalizeWheel(self, event):
+        '''
+        Normalize wheel event values
+        '''
+        numPixels = event.pixelDelta()
+        numDegrees = event.angleDelta() / 8
+        if not numPixels.isNull():
+            return numPixels.y()
+        elif not numDegrees.isNull():
+            numSteps = numDegrees / 15
+            return numSteps.y()
+
+    def wheelEvent(self, event):
+        corse = event.modifiers()==Qt.ControlModifier
+        fine = event.modifiers()==Qt.ShiftModifier
+        amt = self.normalizeWheel(event)*0.02
+        if corse:amt*=2
+        elif fine:amt*=0.25
+        self.setValue(min(max(self.percentage+amt,0),1))
+        QWidget.wheelEvent(self, event)
+
     def event(self, event):
         # print(event.type())
         if (event.type()==QEvent.Resize):
@@ -159,7 +183,7 @@ if __name__ == '__main__':
     # Creating the display window
     window = QMainWindow()
     window.setWindowTitle('Basic Slider')
-    window.setMinimumSize(300,50)
+    window.setMinimumSize(300,800)
 
     # Setting up the slider
     # slider = BasicSlider(Qt.Horizontal,10)
