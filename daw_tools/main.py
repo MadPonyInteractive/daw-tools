@@ -5,7 +5,7 @@ from PySide6.QtOpenGLWidgets import *
 from decimal import Decimal as D
 from decimal import ROUND_HALF_UP
 from operator import itemgetter
-import warnings
+import warnings, math
 
 try:
     from . import music_functions as mf
