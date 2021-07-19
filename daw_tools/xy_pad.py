@@ -109,7 +109,6 @@ class XYPad(QGraphicsView):
         if self.canChange: self.valueChanged.emit(self.percentage)
 
     def mouseMoveEvent(self, event):
-        print(event.position())
         self.setCircle(event.position(),True)
         QGraphicsView.mouseMoveEvent(self, event)
 
