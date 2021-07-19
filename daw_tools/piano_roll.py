@@ -1030,4 +1030,4 @@ if __name__ == '__main__':
     piano_roll.piano.drawNote(77, 3, 0.50, 20)
     piano_roll.piano.drawNote(79, 4, 0.50, 20)
     piano_roll.show()
-    exit(app.exec_())
+    exit(app.exec())
