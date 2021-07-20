@@ -1,22 +1,18 @@
 '''
-A piano widget to integrate in piano rolls, instruments, etc
+An interactive linear (no curves) envelope
 
-Key Shortcuts and interaction
-- Scroll     = Mouse Wheel or Up/Down/Left/Right/Page Up/Down/Home/End
-- Scale      = Mouse Wheel + Control Modifier
-- Press Key  = LMB
-- Piano Roll = LMB + Mouse move
+It is meant to integrate with timelines
 
-Features
-    * Custom ScrollBar and Zoom Slider for easy integration with other widgets
-    * Set a scale and all keys not in scale will be locked
-    * Easily set hovered, pressed and locked color
-    * Display notes as sharps (#) or flats (b)
-    * Lock/UnLock single key or key range
-    * Horizontal and Vertical orientation
-    * Black or white keyboard
-    * Note tool tips
-    * And more...
+Interaction:
+    * Double click to add points
+    * Right click on points to remove them
+    * Left click and drag a point to move it and any selected points
+    * Left click and drag to toggle point selection (selection box)
+    * Delete key will remove selected points
+    * Ctrl+A to select all points
+    * Shift+A to de-select all points
+    * Ctrl+Shift+A Invert point selection
+    * Ctrl+Left Click on point to add/remove to/from selected points
 '''
 from PySide6.QtCore import *
 from PySide6.QtGui import *
