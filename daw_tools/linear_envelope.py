@@ -4,15 +4,16 @@ An interactive linear (no curves) envelope
 It is meant to integrate with timelines
 
 Interaction:
-    * Double click to add points
-    * Right click on points to remove them
-    * Left click and drag a point to move it and any selected points
-    * Left click and drag to toggle point selection (selection box)
-    * Delete key will remove selected points
+    * DoubleClick to add points
+    * RightClick on points to remove them
+    * LeftClick+Drag a point to move it and any selected points
+    * LeftClick+Drag to select multiple points (selection box)
+    * Ctrl+LeftClick+Drag to add multiple points to selection (selection box)
+    * Ctrl+LeftClick on point to add/remove to/from selected points
     * Ctrl+A to select all points
     * Shift+A to de-select all points
     * Ctrl+Shift+A Invert point selection
-    * Ctrl+Left Click on point to add/remove to/from selected points
+    * Delete key will remove selected points
 '''
 if __name__ == '__main__':
     from PySide6.QtCore import *
@@ -23,71 +24,15 @@ if __name__ == '__main__':
     from decimal import Decimal as D
     import music_functions as mf
     from main import Grid
+    from envelope_point import Point as EnvPoint
 else:
     try:
         from . main import *
     except:
         from main import *
 
-class Point(QGraphicsEllipseItem):
-    def __init__(self, radius=30, parent=None):
-        QGraphicsEllipseItem.__init__(self, -radius*.5, -radius*.5, radius, radius, parent=None)
-        self.parent = parent
-        self.selectedBrush = QBrush(QGradient.DustyGrass)# https://webgradients.com/
-        self.selectedPen = QPen(Qt.gray,  2, Qt.SolidLine)
-        self.deSelectedBrush = QBrush(QGradient.CleanMirror)# https://webgradients.com/
-        self.deSelectedPen = QPen(Qt.gray,  2, Qt.SolidLine)
-        self.setBrush(self.deSelectedBrush)
-        self.setPen(self.deSelectedPen)
-        self.setZValue(2)
-        self.setFlags(self.ItemClipsToShape|self.ItemSendsGeometryChanges)
-        self.setCursor(Qt.ArrowCursor)# Setting cursor forces mouse move on QGraphicsView
-        self._prevState = False
-
-    def value(self):
-        return self.data(3)
-
-    def setSelectedBrush(self,b):
-        self.selectedBrush = b
-        self.setSelected(self.isSelected())
-    def setSelectedPen(self,p):
-        self.selectedPen = p
-        self.setSelected(self.isSelected())
-    def setDeSelectedBrush(self,b):
-        self.deSelectedBrush = b
-        self.setSelected(self.isSelected())
-    def setDeSelectedPen(self,p):
-        self.deSelectedPen = p
-        self.setSelected(self.isSelected())
-
-    def setSelected(self,b):
-        if b:
-            self.setBrush(self.selectedBrush)
-            self.setPen(self.selectedPen)
-        else:
-            self.setBrush(self.deSelectedBrush)
-            self.setPen(self.deSelectedPen)
-        self._prevState = self.isSelected()
-        self.setData(0,b)
-
-    def toggleSelected(self):
-        self.setSelected(not self.data(0))
-
-    def isSelected(self):
-        if self.data(0) == None:self.setData(0,False)
-        return self.data(0)
-
-    def prevState(self):
-        return self._prevState
-
-    def itemChange(self, change , value):
-        if change == self.ItemPositionChange and self.scene():
-            # value is the new position.
-            self.parent.positionChanged.emit({'point':self,'pos':value})
-        return super(Point, self).itemChange(change, value)
-
 class Envelope(QGraphicsView):
-    positionChanged = Signal(object)
+    positionChanged = Signal(dict)
     def __init__(self, minimum = -100, maximum = 100, grid=None):
         QGraphicsView.__init__(self)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -107,9 +52,8 @@ class Envelope(QGraphicsView):
         # self.grid.timeSignatureChanged(self.redraw)
         # self.grid.quantizeChanged(self.redraw)
         # Init vars
-        self.interaction = True
         self.points = []
-        self.itemToMove = None
+        self.pointToMove = None
         self.startPoint = None
         self.endPoint = None
         self.minimum = minimum
@@ -136,9 +80,11 @@ class Envelope(QGraphicsView):
         self.selectedPen = QPen(Qt.gray,  2, Qt.SolidLine)
         self.deSelectedBrush = QBrush(QGradient.CleanMirror)# https://webgradients.com/
         self.deSelectedPen = QPen(Qt.gray,  2, Qt.SolidLine)
-        # Start and End Points
-        self.startPoint = self._addPoint(0,0)
-        self.endPoint = self._addPoint(0,0)
+        # Set Start and End Points
+        self.startPoint = self.addPoint(0,0)
+        self.endPoint = self.addPoint(float(self.grid.width()),0)
+        self.startPoint.setLockX(True)
+        self.endPoint.setLockX(True)
         # Default (value 0) horizontal line
         self.defLine = QGraphicsLineItem()
         self.defLine.setPen(QPen(QColor(0,0,0,80),1))
@@ -154,9 +100,9 @@ class Envelope(QGraphicsView):
         # Quantize
         self.useQuantize = True
         self.QuantizePen = QPen(QColor(255,255,255,80),1)
+        self.positionChanged.connect(self.pointMoved)
 
     # Setters ###############################################
-
     def setSelectedBrush(self,b):
         for point in self.points:
             point.setSelectedBrush(b)
@@ -174,7 +120,6 @@ class Envelope(QGraphicsView):
             point.setDeSelectedPen(p)
             self.deSelectedPen = p
 
-    def setInteraction(self, b=True): self.interaction = b
     def setUseCrosshair(self, b=True): self.useCrosshair = b
     def setUseSnapping(self, b=True): self.useSnapping = b
     def setUseQuantize(self, b=True): self.useQuantize = b
@@ -188,7 +133,7 @@ class Envelope(QGraphicsView):
 
     def movePoint(self, point, x, value):
         y=mf.map_val(value,self.maximum,self.minimum,0,self.rect().height())
-        point.setPos(x,y)
+        point.moveTo(x,y)
         self.drawPath()
 
     def deletePoint(self, point):
@@ -224,18 +169,19 @@ class Envelope(QGraphicsView):
 
     def adjustPointsY(self):
         for point in self.points:
-            if point.data(2):
-                nY = point.data(2)
-                y = mf.map_val(nY,0,1,0,self.height())
-                point.setY(y)
+            y = mf.map_val(point.normals()[1],0,1,0,self.height())
+            point.setYBounds(0,self.height())
+            point.setY(y)
+        self.drawPath()
 
     def adjustPointsX(self,w):
         if self.useQuantize: self.drawQuantizeLines()
+        gridWidth = float(self.grid.width())
+        self.setSceneRect(0,0,gridWidth,self.rect().height()-self.horizontalScrollBar().height())
         for point in self.points:
-            if point.data(1):
-                nX = point.data(1)
-                x = mf.map_val(nX,0,1,0,float(self.grid.width()))
-                point.setX(x)
+            x = mf.map_val(point.normals()[0],0,1,0,gridWidth)
+            point.setXBounds(0,gridWidth)
+            point.setX(x)
         self.drawPath()
 
     def quantizeLines(self):
@@ -251,14 +197,6 @@ class Envelope(QGraphicsView):
             line.setData(0,'quantizeLine')
             line.setLine(q,0,q,self.height())
             self.scene().addItem(line)
-
-    def setPointNormalizedPos(self, point):
-        vX = mf.map_val(point.x(),0,float(self.grid.width()),0,1)
-        vY = mf.map_val(point.y(),0,self.height(),0,1)
-        v = mf.map_val(point.y(),self.height(),0,self.minimum,self.maximum)
-        point.setData(1, vX)
-        point.setData(2, vY)
-        point.setData(3, v)
 
     def drawPath(self):
         if not self.startPoint or not self.endPoint:return
@@ -296,22 +234,22 @@ class Envelope(QGraphicsView):
         self.drawPath()
 
     def _addPoint(self, x, y):
-        point = Point(self.pointRadius,self)
-        self.scene().addItem(point)
-        point.setPos(x,y)
+        point = EnvPoint(self.pointRadius,self)
+        point.setBounds(0,0,float(self.grid.width()),self.height())
         point.setSelectedBrush(self.selectedBrush)
         point.setSelectedPen(self.selectedPen)
         point.setDeSelectedBrush(self.deSelectedBrush)
         point.setDeSelectedPen(self.deSelectedPen)
-        self.setPointNormalizedPos(point)
+        point.moveTo(x,y)
         self.points.append(point)
+        self.scene().addItem(point)
         self.drawPath()
         return point
 
     def updateCrosshair(self, event):
         if self.useCrosshair:
             p = event.position()
-            item = self.itemToMove or self.itemAt(p.x(),p.y())
+            item = self.pointToMove or self.itemAt(p.x(),p.y())
             if self.isPoint(item):
                 self.crossH.show()
                 self.crossV.show()
@@ -333,61 +271,23 @@ class Envelope(QGraphicsView):
         for item in self.scene().items():
             if self.isPoint(item):item.toggleSelected()
 
+    def setSnapLists(self):
+        self.pointToMove.setSnapXList([])
+        self.pointToMove.setSnapYList([])
+        # X Snapping (Grid Quantize)
+        if self.useQuantize:
+            for i in self.quantizeLines(): self.pointToMove.snapListX.append(i.line().x1())
+        # Y Snapping
+        if self.useSnapping:
+            self.pointToMove.snapListY.append(self.getCenter())
+            for p in self.pointToMove.getDeSelectedSiblings(): self.pointToMove.snapListY.append(p.y())
+
     # Events ###############################################
+    def pointMoved(self, d):
+        pass
+
     def mouseMoveEvent(self, event):
         QGraphicsView.mouseMoveEvent(self, event)
-        if not self.interaction: return
-        # print(self.getValueAtX(event.position().x()), event.position().y())
-        self.updateCrosshair(event)
-        if self.itemToMove:
-            p = event.position()
-            x = min(max(p.x(),0),float(self.grid.width()))
-            y = min(max(p.y(),0),self.height())
-            if self.itemToMove == self.startPoint:x = 0
-            if self.itemToMove == self.endPoint:x = float(self.grid.width())
-            # Y Snapping
-            if self.useSnapping:
-                snapList=[]
-                snapList.append(self.getCenter())
-                for point in self.points:
-                    # Not item being dragged and not a selected point
-                    if point != self.itemToMove and not point.isSelected(): snapList.append(point.y())
-                snap = mf.get_closest_number(y,snapList)
-                if abs(y-snap)<=self.snapValue:y=snap
-            # X Snapping (Grid Quantize)
-            if self.useQuantize:
-                snapList=[]
-                for i in self.quantizeLines(): snapList.append(i.line().x1())
-                snap = mf.get_closest_number(x,snapList)
-                if abs(x-snap)<=self.snapValue:x=snap
-
-            prevX = self.itemToMove.x()
-            prevY = self.itemToMove.y()
-            # move dragged item
-            self.itemToMove.setPos(x,y)
-            self.setPointNormalizedPos(self.itemToMove)
-            x = self.itemToMove.x() - prevX
-            y = self.itemToMove.y() - prevY
-            # loop and move selected points
-            for item in self.items():
-                if self.isPoint(item) and item != self.itemToMove and item.isSelected():
-                    if item == self.startPoint or item == self.endPoint:
-                        item.moveBy(0,y)
-                    else:
-                        item.moveBy(x,y)
-                    # Stop points from moving off grid
-                    gridW = float(self.grid.width())
-                    if item.x() >= gridW: item.setX(gridW)
-                    if item.x() <= 0: item.setX(0)
-                    if item.y() >= self.height(): item.setY(self.height())
-                    if item.y() <= 0: item.setY(0)
-                    self.setPointNormalizedPos(item)
-                # Delete points with same position
-                for otherItem in self.items():
-                    if self.isPoint(otherItem) and otherItem!=item:
-                        if item.x() == otherItem.x() and item.y() == otherItem.y():
-                            self.deletePoint(item)
-            self.drawPath()
         if self.selectBox.isVisible():
             # Draw Selection Box
             x = event.position().x()
@@ -413,7 +313,7 @@ class Envelope(QGraphicsView):
             for item in currInList:
                 if self.isPoint(item):
                     if item not in prevInList:
-                        item.toggleSelected()
+                        item.setSelected(True)
                         prevInList.append(item)
                         self.selectBox.setData(0, prevInList)
             for item in self.items():
@@ -421,20 +321,22 @@ class Envelope(QGraphicsView):
                     if item in prevInList:
                         prevInList.remove(item)
                         self.selectBox.setData(0, prevInList)
-                        item.setSelected(item.prevState())
+                        item.setSelected(not item.isSelected())
+            return
+        self.updateCrosshair(event)
+        self.drawPath()
 
     def mousePressEvent(self, event):
         QGraphicsView.mousePressEvent(self, event)
-        if not self.interaction: return
         p = event.position()
         item = self.itemAt(p.x(),p.y())
         if self.isPoint(item):
             if event.button() == Qt.LeftButton:
                 if event.modifiers()==Qt.ControlModifier:
-                    item.toggleSelected()
+                    for i in self.prevSelectedItems:i.setSelected(True)
                 else:
-                    self.itemToMove = item
-                    if not item.isSelected(): self.deSelectPoints()# not a selected item
+                    self.pointToMove = item
+                    self.setSnapLists()
             elif event.button() == Qt.RightButton:
                 self.deletePoint(item)
                 self.drawPath()
@@ -446,42 +348,36 @@ class Envelope(QGraphicsView):
 
     def mouseDoubleClickEvent(self, event):
         QGraphicsView.mouseDoubleClickEvent(self, event)
-        if not self.interaction: return
         p = event.position()
-        self.itemToMove = self._addPoint(p.x(),p.y())
+        self.pointToMove = self._addPoint(p.x(),p.y())
+        # self.setSnapLists()
 
     def mouseReleaseEvent(self, event):
         QGraphicsView.mouseReleaseEvent(self, event)
-        if not self.interaction: return
-        if self.itemToMove: self.itemToMove = None
-        if not len(self.selectBox.data(0)):self.deSelectPoints()
+        if self.pointToMove: self.pointToMove = None
+        self.prevSelectedItems = self.scene().selectedItems()
+        # if not len(self.scene().selectedItems()):self.deSelectPoints()
         self.updateCrosshair(event)
         self.selectBox.hide()
+        # Delete points with same position
+        for item in self.items():
+            for otherItem in self.items():
+                if self.isPoint(otherItem) and otherItem!=item:
+                    if item.x() == otherItem.x() and item.y() == otherItem.y():
+                        self.deletePoint(item)
         self.drawPath()
-
-    def showEvent(self, event):
-        self.startPoint.setPos(self.rect().left(),self.getCenter())
-        self.setPointNormalizedPos(self.startPoint)
-        self.endPoint.setPos(float(self.grid.width()),self.getCenter())
-        self.setPointNormalizedPos(self.endPoint)
-        self.drawPath()
-        QGraphicsView.showEvent(self, event)
 
     def resizeEvent(self, event):
-        # self.setFrameRect(QRect(0,0,float(self.grid.width()),self.rect().height()))
-        # self.setSceneRect(self.rect())
-        self.setSceneRect(0,0,float(self.grid.width()),self.rect().height()-self.horizontalScrollBar().height())
+        gridWidth = float(self.grid.width())
+        self.setSceneRect(0,0,gridWidth,self.rect().height()-self.horizontalScrollBar().height())
         midHeight = self.getCenter()
         self.defLine.setLine(0,midHeight,self.rect().right(),midHeight)
         if self.useQuantize: self.drawQuantizeLines()
         self.adjustPointsY()
-        self.drawPath()
         QGraphicsView.resizeEvent(self, event)
-
 
     def keyPressEvent(self, event):
         QGraphicsView.keyPressEvent(self, event)
-        if not self.interaction: return
         # Delete selected
         if event.key()==Qt.Key_Delete:
             self.deleteSelectedPoints()
@@ -530,13 +426,14 @@ if __name__ == '__main__':
     # also settings this points de-selected brush as addPoint() returns the point
     for i in range(80): env.addPoint((i+5)*9,math.sin(i)*15).setDeSelectedBrush(QBrush(QColor(255,0,0)))
     # adding and storing a point in a variable
-    point = env.addPoint(200,-80)
+    point = env.addPoint(25,100)# x=25, value=100
+    # moving point to x=250, value=-100
+    env.movePoint(point, 250, -100)
     # setting point de-selected Pen (outline)
     point.setDeSelectedPen(QPen(Qt.yellow,5))
     # setting point selected Pen (outline)
     point.setSelectedPen(QPen(Qt.red,10))
-    # moving stored points need to happen after the envelope is shown
-    env.movePoint(point, 200, 80)# ! This does not work here
+
     l.addWidget(env,1,0)
 
     # Adding layout to the window
