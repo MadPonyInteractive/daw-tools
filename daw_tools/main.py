@@ -15,3 +15,7 @@ try:
     from . grid import Grid
 except:
     from grid import Grid
+try:
+    from . envelope_point import Point as EnvPoint
+except:
+    from envelope_point import Point as EnvPoint
