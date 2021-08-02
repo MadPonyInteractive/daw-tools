@@ -30,6 +30,10 @@ and the examples are all moved to the top level folder.
 
 CURRENT WIDGETS
 ---------------
+### METER
+![image](https://user-images.githubusercontent.com/30872066/127906602-82c1a064-07b3-4088-8ae7-5a92971c84b4.png)
+
+
 ### DIAL
 ![image](https://user-images.githubusercontent.com/30872066/127852034-27d5aed8-0adc-47b7-8525-1b42ee2f51fe.png)
 
