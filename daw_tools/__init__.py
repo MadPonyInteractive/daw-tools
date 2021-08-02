@@ -2,6 +2,7 @@ from . basic_slider import BasicSlider
 from . range_slider import RangeSlider
 from . xy_pad import XYPad
 from . dial import Dial
+from . meter import Meter
 from . linear_envelope import Envelope as LinearEnvelope
 from . transpose import Transpose
 from . playhead import Playhead
