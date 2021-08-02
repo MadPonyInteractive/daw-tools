@@ -30,6 +30,10 @@ and the examples are all moved to the top level folder.
 
 CURRENT WIDGETS
 ---------------
+### DIAL
+![image](https://user-images.githubusercontent.com/30872066/127852034-27d5aed8-0adc-47b7-8525-1b42ee2f51fe.png)
+
+
 ### LINEAR ENVELOPE
 ![image](https://user-images.githubusercontent.com/30872066/126156507-dcee3b27-6de8-4b98-a32a-bbde0b1b2237.png)
 
