@@ -15,7 +15,6 @@ class Meter(QGraphicsView):
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setAlignment(Qt.AlignLeft|Qt.AlignTop)
-        self.setRenderHint(QPainter.Antialiasing)
         self.setFrameShape(QFrame.NoFrame)
         self.setScene(QGraphicsScene())
         self.minimum = _min
