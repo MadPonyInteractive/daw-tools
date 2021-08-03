@@ -31,7 +31,8 @@ and the examples are all moved to the top level folder.
 CURRENT WIDGETS
 ---------------
 ### METER
-![image](https://user-images.githubusercontent.com/30872066/127906602-82c1a064-07b3-4088-8ae7-5a92971c84b4.png)
+![image](https://user-images.githubusercontent.com/30872066/128000271-1a1a6c4a-4090-4f9e-a6d0-5a7f50c52249.png)
+
 
 
 ### DIAL
