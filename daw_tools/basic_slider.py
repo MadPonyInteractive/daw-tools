@@ -12,13 +12,10 @@ Basic Slider
     TODO if needed: Keyboard Events
     TODO if needed: Steps
 '''
-if __name__ == '__main__':
-    from PySide6.QtCore import *
-    from PySide6.QtGui import *
-    from PySide6.QtWidgets import *
-    import music_functions as mf
-else:
+try:
     from . main import *
+except:
+    from main import *
 
 class BasicSlider(QWidget):
     valueChanged = Signal(tuple)
