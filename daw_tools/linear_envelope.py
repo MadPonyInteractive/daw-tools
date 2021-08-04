@@ -17,10 +17,14 @@ Interaction:
 '''
 try:
     from . main import *
+    from . envelope_point import Point as EnvPoint
+    from . grid import Grid
+    from . import music_functions as mf
 except:
     from main import *
     from envelope_point import Point as EnvPoint
     from grid import Grid
+    import music_functions as mf
 
 class Envelope(QGraphicsView):
     positionChanged = Signal(dict)
