@@ -1,16 +1,22 @@
-if __name__ == '__main__':
-    from PySide6.QtCore import *
-    from PySide6.QtGui import *
-    from PySide6.QtWidgets import *
+'''
+This module name might be misleading for lack of a better term.
+
+In it's essence it is a viewport for arrange able items.
+
+It is meant for multiple applications:
+* A piano roll viewport where you can arrange its notes
+* A timeline viewport where you can arrange patterns and change track order
+* A sequencer viewport
+
+'''
+try:
+    from . main import *
+    from . import music_functions as mf
+    from . grid import Grid
+except:
+    from main import *
     import music_functions as mf
-    import warnings
-    from decimal import Decimal as D
-    from main import Grid
-else:
-    try:
-        from . main import *
-    except:
-        from main import *
+    from grid import Grid
 
 
 class TimelineItem(QGraphicsRectItem):
