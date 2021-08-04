@@ -7,8 +7,10 @@ It is responsible for timing calculations and used by all time based widgets.
 '''
 try:
     from . main import *
+    from . import music_functions as mf
 except:
     from main import *
+    import music_functions as mf
 
 class Grid:
     '''
