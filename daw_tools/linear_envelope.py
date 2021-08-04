@@ -15,21 +15,12 @@ Interaction:
     * Ctrl+Shift+A Invert point selection
     * Delete key will remove selected points
 '''
-if __name__ == '__main__':
-    from PySide6.QtCore import *
-    from PySide6.QtGui import *
-    from PySide6.QtWidgets import *
-    import warnings, math
-    from operator import itemgetter
-    from decimal import Decimal as D
-    import music_functions as mf
-    from main import Grid
+try:
+    from . main import *
+except:
+    from main import *
     from envelope_point import Point as EnvPoint
-else:
-    try:
-        from . main import *
-    except:
-        from main import *
+    from grid import Grid
 
 class Envelope(QGraphicsView):
     positionChanged = Signal(dict)
