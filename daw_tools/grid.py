@@ -1,13 +1,14 @@
-if __name__ == '__main__':
-    import music_functions as mf
-    from decimal import Decimal as D
-else:
-    try:
-        from . main import mf
-        from . main import D
-    except:
-        from main import mf
-        from main import D
+'''
+A musical grid composed by beats and bars based on BPM, FPS and Time Signature
+
+This is a very important module in daw-tools.
+It is responsible for timing calculations and used by all time based widgets.
+
+'''
+try:
+    from . main import *
+except:
+    from main import *
 
 class Grid:
     '''
