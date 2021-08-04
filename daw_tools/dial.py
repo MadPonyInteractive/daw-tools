@@ -20,6 +20,7 @@ try:
     from . main import *
 except:
     from main import *
+    import music_functions as mf
 
 class Dial(QWidget):
     valueChanged = Signal(int)
