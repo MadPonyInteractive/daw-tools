@@ -17,18 +17,12 @@ Range Slider
         TODO: Implement Vertical orientation
         TODO if needed: Wheel and Keyboard Events
 '''
-if __name__ == '__main__':
-    from PySide6.QtCore import *
-    from PySide6.QtGui import *
-    from PySide6.QtWidgets import *
-    from decimal import Decimal as D
-    from decimal import ROUND_HALF_UP
+try:
+    from . main import *
+    from . import music_functions as mf
+except:
+    from main import *
     import music_functions as mf
-else:
-    try:
-        from . main import *
-    except:
-        from main import *
 
 class RangeSliderItem(QGraphicsRectItem):
     def __init__(self, rangeStart=0.0, rangeEnd=1.0, parent=None):
