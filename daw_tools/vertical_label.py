@@ -1,15 +1,10 @@
 '''
  A simple widget to create vertical/rotatable labels
 '''
-if __name__ == '__main__':
-    from PySide6.QtCore import *
-    from PySide6.QtGui import *
-    from PySide6.QtWidgets import *
-else:
-    try:
-        from . main import *
-    except:
-        from main import *
+try:
+    from . main import *
+except:
+    from main import *
 
 class VerticalLabel(QGraphicsView):
     valueChanged = Signal(tuple)
