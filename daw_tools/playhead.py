@@ -1,16 +1,11 @@
-if __name__ == '__main__':
-    from PySide6.QtCore import *
-    from PySide6.QtGui import *
-    from PySide6.QtWidgets import *
-    import warnings
-    from decimal import Decimal as D
+try:
+    from . main import *
+    from . import music_functions as mf
+    from . grid import Grid
+except:
+    from main import *
     import music_functions as mf
-    from main import Grid
-else:
-    try:
-        from . main import *
-    except:
-        from main import *
+    from grid import Grid
 
 class Playhead(QGraphicsView):
     playPosChanged = Signal(float)
