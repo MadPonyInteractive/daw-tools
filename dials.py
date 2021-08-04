@@ -19,6 +19,7 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from daw_tools import Dial
+from daw_tools import mf
 
 # Creating the application
 app = QApplication([])
