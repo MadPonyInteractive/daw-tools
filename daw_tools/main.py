@@ -6,16 +6,3 @@ from decimal import Decimal as D
 from decimal import ROUND_HALF_UP
 from operator import itemgetter
 import warnings, math
-
-try:
-    from . import music_functions as mf
-except:
-    import music_functions as mf
-try:
-    from . grid import Grid
-except:
-    from grid import Grid
-try:
-    from . envelope_point import Point as EnvPoint
-except:
-    from envelope_point import Point as EnvPoint
