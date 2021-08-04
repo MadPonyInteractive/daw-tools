@@ -8,17 +8,12 @@ XYPad
 
     TODO if needed: Wheel and Keyboard Events
 '''
-if __name__ == '__main__':
-    from PySide6.QtCore import *
-    from PySide6.QtGui import *
-    from PySide6.QtWidgets import *
-    from PySide6.QtOpenGLWidgets import *
+try:
+    from . main import *
+    from . import music_functions as mf
+except:
+    from main import *
     import music_functions as mf
-else:
-    try:
-        from . main import *
-    except:
-        from main import *
 
 class XYPad(QGraphicsView):
     valueChanged = Signal(tuple)
