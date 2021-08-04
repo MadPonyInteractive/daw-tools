@@ -13,17 +13,10 @@ All move and set methods will respect bounds
 The mouseMove event will snap the grabbed item to the snap lists but not it's selected siblings
 
 '''
-if __name__ == '__main__':
-    from PySide6.QtCore import *
-    from PySide6.QtGui import *
-    from PySide6.QtWidgets import *
-    import music_functions as mf
-    from decimal import Decimal as D
-else:
-    try:
-        from . main import *
-    except:
-        from main import *
+try:
+    from . main import *
+except:
+    from main import *
 
 class Point(QGraphicsEllipseItem):
     def __init__(self, radius=30, parent=None):
