@@ -94,5 +94,9 @@ The industry standard for building audio applications seems to be [JUCE](https:/
 But JUCE uses C++, a language that makes me physically ill just looking at it :D
 
 Considering my idea does not need all the intricacies that JUCE offers, I'm going with python.
+So all the widgets in daw-tools will be applied in a real world application.
+This means I will keep updating this project as I find bugs when implementing.
 
-Will keep updating this project when possible
+At the moment it's still in early development so I've just been updating improovements where I see fit with no branches or version control but as soon as the GRID dependent widgets are finished, version control will start.
+
+You are welcome to participate in this project!
