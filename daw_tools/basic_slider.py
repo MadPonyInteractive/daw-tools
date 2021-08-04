@@ -16,6 +16,7 @@ try:
     from . main import *
 except:
     from main import *
+    import music_functions as mf
 
 class BasicSlider(QWidget):
     valueChanged = Signal(tuple)
