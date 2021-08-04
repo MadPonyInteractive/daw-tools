@@ -18,16 +18,12 @@ Features
     * Note tool tips
     * And more...
 '''
-if __name__ == '__main__':
-    from PySide6.QtCore import *
-    from PySide6.QtGui import *
-    from PySide6.QtWidgets import *
+try:
+    from . main import *
+    from . import music_functions as mf
+except:
+    from main import *
     import music_functions as mf
-else:
-    try:
-        from . main import *
-    except:
-        from main import *
 
 class PianoKeyItem(QGraphicsRectItem):
     def __init__(self, width, height, note_number, parent, isHorizontal=False):
