@@ -10,7 +10,6 @@ Basic Slider
         * Mouse Wheel + Shift   = Fine  = 2x more precision
 
     TODO if needed: Keyboard Events
-    TODO if needed: Steps
 '''
 try:
     from . main import *
@@ -38,6 +37,8 @@ class BasicSlider(QWidget):
         self.canChange = None
         self.fixRadiusX = False
         self.fixRadiusY = False
+        self.steps = 0
+        self.step_list = []
         self.setAttribute(Qt.WA_StyledBackground)# allow setStylesheet
 
     def setColor(self, color):
@@ -90,13 +91,31 @@ class BasicSlider(QWidget):
         painter.drawRoundedRect(QRect(fillRect),self.radius,self.radius,Qt.AbsoluteSize)
         painter.end()
 
+    def makeStepList(self):
+        if not self.steps: return
+        size = 0
+        full_size = self.width() if self.isH else self.height()
+        step_size = full_size/self.steps
+        self.step_list = []
+        while size <= full_size:
+            self.step_list.append(size)
+            size += step_size
+        print(self.step_list)
+
+    def setSteps(self, steps):
+        self.steps = steps
+        self.makeStepList()
+
     def setValue(self, pos, mouse=False):
         if pos == None:return
-        width = self.rect().width()
-        height = self.rect().height()
+        width = self.width()
+        height = self.height()
         if mouse:
             x = pos.x()
             y = pos.y()
+            if self.steps:
+                if self.isH: x=mf.get_closest_number(x, self.step_list)
+                else: y=mf.get_closest_number(y, self.step_list)
             x = min(max(x,0),width)
             y = min(max(y,0),height)
         else:
@@ -132,6 +151,12 @@ class BasicSlider(QWidget):
 
         self.update()
         if self.canChange:self.valueChanged.emit(self.percentage)
+
+    def width(self):
+        return self.rect().width()
+
+    def height(self):
+        return self.rect().height()
 
     def mouseMoveEvent(self, event):
         self.setValue(event.position(),True)
@@ -172,6 +197,7 @@ class BasicSlider(QWidget):
             self.canChange = False
             self.redraw()
             self.canChange = True
+            self.makeStepList()
             event.accept()
         return super(BasicSlider, self).event(event)
 
@@ -188,16 +214,25 @@ if __name__ == '__main__':
     # slider = BasicSlider(Qt.Horizontal,10)
     slider = BasicSlider(Qt.Vertical,10)
 
+    # Setting steps
+    slider.setSteps(10)
+    # You can also disable steps at any time
+    # slider.setSteps(None)
+
     slider.setColor(QColor(0,255,0))
 
     slider.setStyleSheet("""
-    background-color: rgb(50, 100, 50);
+    background-color: rgb(50, 50, 50);
     border-radius:10;
     """)
 
     # events
     def changed(v):
         print('Changed:',v)
+        # changing color while dragging
+        green = mf.map_val(v,0,1,0,255)
+        red = mf.map_val(v,1,0,0,255)
+        slider.setColor(QColor(green,red,0))
     slider.valueChanged.connect(changed)
 
     def done(v):print('Done:',v)
