@@ -70,7 +70,7 @@ class Dial(QWidget):
         rsl = None
         try:
             rsl = int(self.edit.displayText())
-        except:pass
+        except:return
         self.edit.hide()
         if rsl: self.setValue(rsl)
 
@@ -117,8 +117,8 @@ class Dial(QWidget):
 
     def setValue(self,v):
         if v == self.value:return
-        self.value = v
-        self.percentage = mf.map_val(v,self.minimum,self.maximum,0,1)
+        self.value = max(min(v,self.maximum),self.minimum)
+        self.percentage = mf.map_val(self.value,self.minimum,self.maximum,0,1)
         if self.canChange: self.valueChanged.emit(self.value)
         self.update()
 
@@ -134,6 +134,7 @@ class Dial(QWidget):
     def setColor(self, color):
         self.color = color
         self.setBrush(QBrush(self.color))
+        self.pen().setColor(color)
         palette = QPalette()
         palette.setColor(QPalette.Text, self.color)
         self.edit.setPalette(palette)
@@ -252,6 +253,7 @@ if __name__ == '__main__':
 
     # Setting up the dial
     dial = Dial(-100,100,0)# min, max, default
+    # dial = Dial(0,10,5)# min, max, default
 
     dial.setColor(QColor(0,255,0))
 
@@ -265,6 +267,7 @@ if __name__ == '__main__':
 
     pen = dial.pen()
     pen.setWidth(10)
+    # pen.setColor(QColor(255,0,0))
     pen.setCapStyle(Qt.RoundCap)
     dial.setPen(pen)
 
