@@ -13,7 +13,7 @@ Current Versions and dependencies
 
 USAGE
 =====
-Add daw_tools directory to your python project
+Download and add daw_tools directory to your python project, then:
 
 `import daw_tools`
 
