@@ -1,6 +1,4 @@
 '''
-This module name might used to be timeline.
-
 In it's essence it is a viewport for arrange able items.
 
 It is meant for multiple applications:
