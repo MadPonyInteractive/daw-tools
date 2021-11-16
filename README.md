@@ -15,9 +15,11 @@ USAGE
 =====
 Download and add daw_tools directory to your python project, then:
 
-`import daw_tools`
+```python
+import daw_tools
 
-`piano = daw_tools.Piano()`
+piano = daw_tools.Piano()
+```
 
 All the files in the top level folder are examples of how to use the already finished widgets.
 
