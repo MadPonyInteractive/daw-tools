@@ -2,7 +2,7 @@
 
 ### This project documentation is Under construction...
 
-
+***
 
 The initial aim is to provide PyQt/PySide widgets to aid on daw type projects.
 
