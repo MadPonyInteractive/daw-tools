@@ -40,9 +40,9 @@ staff.beats += 4
 
   * Parameters
 
-    **bpm** - _float or int_
+    * **bpm** - _float or int_
 
-    '''Sets the staff BPM'''
+    `Sets the staff BPM`
 
 ### Staff.bpm()
 
@@ -50,7 +50,7 @@ staff.beats += 4
 
   _float or int_
 
-  '''Returns current BPM'''
+  `Returns current BPM`
 
 ### Staff.setTimeSignature(time_sig)
 
@@ -58,7 +58,7 @@ staff.beats += 4
 
     **time_sig** - _tuple or string_
 
-  '''Sets the time signature'''
+  `Sets the time signature`
 
 ```python
 Staff.setTimeSignature('4/4')
@@ -74,7 +74,7 @@ Staff.setTimeSignature(4,4)
   * Return type
     * _tuple or string_
 
-  '''Returns current time signature as tuple or as string if True is passed'''
+  `Returns current time signature as tuple or as string if True is passed`
 
 ### Staff.setBeatsPerBar()
 
