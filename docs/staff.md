@@ -48,7 +48,7 @@ staff.beats += 4
 
   * Return type
 
-  _float or int_
+    * _float or int_
 
   `Returns current BPM`
 
@@ -56,7 +56,7 @@ staff.beats += 4
 
   * Parameters
 
-    **time_sig** - _tuple or string_
+    * **time_sig** - _tuple or string_
 
   `Sets the time signature`
 
