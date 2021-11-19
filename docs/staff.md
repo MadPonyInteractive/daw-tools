@@ -36,29 +36,35 @@ staff.beats += 4
 
 ## Methods
 
+***
+
 ### Staff.setBpm(bpm)
 
-  * Parameters
+* Parameters
 
-    * **bpm** - _float or int_
+  * **bpm** - `float or int`
 
-    `Sets the staff BPM`
+Sets the staff BPM
+
+***
 
 ### Staff.bpm()
 
-  * Return type
+* Return type
 
-    * _float or int_
+  * 'float or int'
 
-  `Returns current BPM`
+Returns current BPM
+
+***
 
 ### Staff.setTimeSignature(time_sig)
 
-  * Parameters
+* Parameters
 
-    * **time_sig** - _tuple or string_
+  * **time_sig** - `tuple or string`
 
-  `Sets the time signature`
+Sets the time signature
 
 ```python
 Staff.setTimeSignature('4/4')
@@ -66,15 +72,19 @@ Staff.setTimeSignature('4/4')
 Staff.setTimeSignature(4,4)
 ```
 
+***
+
 ### Staff.timeSignature(asString=False)
 
-  * Parameters
-    * **asString** - _boolean_
+* Parameters
+  * **asString** - `boolean`
 
-  * Return type
-    * _tuple or string_
+* Return type
+  * `tuple or string`
 
-  `Returns current time signature as tuple or as string if True is passed`
+Returns current time signature as tuple or as string if True is passed
+
+***
 
 ### Staff.setBeatsPerBar()
 
