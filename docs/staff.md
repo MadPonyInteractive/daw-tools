@@ -52,7 +52,7 @@ Sets the staff BPM
 
 * Return type
 
-  * 'float or int'
+  * `float or int`
 
 Returns current BPM
 
@@ -64,7 +64,7 @@ Returns current BPM
 
   * **time_sig** - `tuple or string`
 
-Sets the time signature
+Sets the time signature (beats per bar, beat duration)
 
 ```python
 Staff.setTimeSignature('4/4')
@@ -77,103 +77,129 @@ Staff.setTimeSignature(4,4)
 ### Staff.timeSignature(asString=False)
 
 * Parameters
+
   * **asString** - `boolean`
 
 * Return type
+
   * `tuple or string`
 
 Returns current time signature as tuple or as string if True is passed
 
 ***
 
-### Staff.setBeatsPerBar()
+### Staff.setBeatsPerBar(bpb)
 
-  * Parameters
+* Parameters
 
+  * **bpb** - `int`
 
-  * Return type
+Sets the time signature beats per bar
 
+***
 
 ### Staff.beatsPerBar()
 
-  * Parameters
+* Return type
+  * `int`
 
+Returns the time signature beats per bar
 
-  * Return type
+***
 
+### Staff.setBeatDuration(bd)
 
-### Staff.setBeatDuration()
+* Parameters
 
-  * Parameters
+  * **bd** - `int`
 
+Sets the time signature beats duration
 
-  * Return type
-
+***
 
 ### Staff.beatDuration()
 
-  * Parameters
+* Return type
 
+  * `int`
 
-  * Return type
+Returns the time signature beats duration
 
+***
 
-### Staff.setPps()
+### Staff.setPps(pps)
 
-  * Parameters
+* Parameters
 
+  * **pps** - `float or int`
 
-  * Return type
+Sets pixels per second
 
+This can be used for zooming but you probably wont need it
+
+***
 
 ### Staff.pps()
 
-  * Parameters
+* Return type
 
+  * `float or int`
 
-  * Return type
+Returns pixels per second (how many pixels in 1 second)
 
+***
 
 ### Staff.width()
 
-  * Parameters
+* Return type
 
+  * `float`
 
-  * Return type
+Returns how many pixels in the whole staff
 
+***
 
 ### Staff.seconds()
 
-  * Parameters
+* Return type
 
+  * `float`
 
-  * Return type
+Returns how many seconds in staff
 
+***
 
-### Staff.setFps()
+### Staff.setFps(fps)
 
-  * Parameters
+* Parameters
 
+  * **fps** - `int`
 
-  * Return type
+Sets the Frames per second
 
+***
 
 ### Staff.fps()
 
-  * Parameters
+* Return type
 
+  * `int`
 
-  * Return type
+Returns frames per second
 
+***
 
 ### Staff.frames()
 
-  * Parameters
+* Return type
 
+  * `int`
 
-  * Return type
+Returns how many frames in staff
 
+## Inner Classes
 
+***
 
 
 
