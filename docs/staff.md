@@ -69,12 +69,10 @@ Staff.setTimeSignature(4,4)
 ### Staff.timeSignature(asString=False)
 
   * Parameters
-
-        **asString** - _boolean_
+    * **asString** - _boolean_
 
   * Return type
-
-        _tuple or string_
+    * _tuple or string_
 
   '''Returns current time signature as tuple or as string if True is passed'''
 
