@@ -258,7 +258,7 @@ So (1 bar = 4 beats) + 5 beats = 2 bars and 9 beats in staff, leaving 1 extra be
 
 ### Listing Beats and Bars
 
-Both the Staff.Beats and the Staff.Bars inner classes have a handy iterator for retrieving pixel positions.
+The Staff.Beats, Staff.Bars and the Staff.Quantize inner classes have a handy iterator for retrieving pixel positions.
 
 ```python
 staff = Staff(bars=2)
@@ -639,7 +639,7 @@ print(staff.sample.beats())
 print(staff.sample.bars())
 ```
 
-
 ***
 
 [Back Home](index.md)
+
