@@ -32,127 +32,134 @@ staff.beats += 4
 >>> 200.0
 ```
 
+***
+
 ## Methods
 
-#### Staff.setBpm(bpm)
-  
+### Staff.setBpm(bpm)
+
   * Parameters
-    **bpm** - float or int
 
-    Sets the staff BPM
+    **bpm** - _float or int_
 
-#### Staff.bpm()
-  
+    '''Sets the staff BPM'''
+
+### Staff.bpm()
+
   * Return type
-  float or int
 
-  Returns current BPM
+  _float or int_
 
-#### Staff.setTimeSignature(time_sig)
-  
+  '''Returns current BPM'''
+
+### Staff.setTimeSignature(time_sig)
+
   * Parameters
-    **time_sig** - tuple or string
 
-  Sets the time signature
+    **time_sig** - _tuple or string_
+
+  '''Sets the time signature'''
 
 ```python
 Staff.setTimeSignature('4/4')
 # or
 Staff.setTimeSignature(4,4)
-```  
+```
 
-#### Staff.timeSignature(asString=False)
-  
-  * Parameters
-  **asString** - boolean
+### Staff.timeSignature(asString=False)
 
-  * Return type
-  tuple or string
-
-  Returns current time signature as tuple or as string if True is passed
-
-#### Staff.setBeatsPerBar()
-  
   * Parameters
 
+        **asString** - _boolean_
 
   * Return type
 
+        _tuple or string_
 
-#### Staff.beatsPerBar()
-  
+  '''Returns current time signature as tuple or as string if True is passed'''
+
+### Staff.setBeatsPerBar()
+
   * Parameters
 
 
   * Return type
 
 
-#### Staff.setBeatDuration()
-  
+### Staff.beatsPerBar()
+
   * Parameters
 
 
   * Return type
 
 
-#### Staff.beatDuration()
-  
+### Staff.setBeatDuration()
+
   * Parameters
 
 
   * Return type
 
 
-#### Staff.setPps()
-  
+### Staff.beatDuration()
+
   * Parameters
 
 
   * Return type
 
 
-#### Staff.pps()
-  
+### Staff.setPps()
+
   * Parameters
 
 
   * Return type
 
 
-#### Staff.width()
-  
+### Staff.pps()
+
   * Parameters
 
 
   * Return type
 
 
-#### Staff.seconds()
-  
+### Staff.width()
+
   * Parameters
 
 
   * Return type
 
 
-#### Staff.setFps()
-  
+### Staff.seconds()
+
   * Parameters
 
 
   * Return type
 
 
-#### Staff.fps()
-  
+### Staff.setFps()
+
   * Parameters
 
 
   * Return type
 
 
-#### Staff.frames()
-  
+### Staff.fps()
+
+  * Parameters
+
+
+  * Return type
+
+
+### Staff.frames()
+
   * Parameters
 
 
