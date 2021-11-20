@@ -24,24 +24,24 @@ The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120
 
 | Inner Classes |
 |:--------------|
-|class [DStaff.Quantize](staff.html#DawTools.DStaff.Quantize)|
-|class [DStaff.Bars](staff.html#DawTools.DStaff.Bars)|
-|class [DStaff.Beats](staff.html#DawTools.DStaff.Beats)|
-|class [DStaff.WholeNote](staff.html#DawTools.DStaff.WholeNote)|
-|class [DStaff.Beat](staff.html#DawTools.DStaff.Beat)|
-|class [DStaff.Bar](staff.html#DawTools.DStaff.Bar)|
-|class [DStaff.Frame](staff.html#DawTools.DStaff.Frame)|
-|class [DStaff.Sample](staff.html#DawTools.DStaff.Sample)|
+|class [DStaff.Quantize](staff.html#dawtoolsdstaffquantize)|
+|class [DStaff.Bars](staff.html#dawtoolsdstaffbars)|
+|class [DStaff.Beats](staff.html#dawtoolsdstaffbeats)|
+|class [DStaff.WholeNote](staff.html#dawtoolsdstaffwholenote)|
+|class [DStaff.Beat](staff.html#dawtoolsdstaffbeat)|
+|class [DStaff.Bar](staff.html#dawtoolsdstaffbar)|
+|class [DStaff.Frame](staff.html#dawtoolsdstaffframe)|
+|class [DStaff.Sample](staff.html#dawtoolsdstaffsample)|
 
-| Signals |
-|:--------|
-|[widthChanged()](staff.html)|
-|[timeSignatureChanged()](staff.html)|
-|[bpmChanged()](staff.html)|
-|[quantizeChanged()](staff.html)|
-|[changed()](staff.html)|
+| Signals | Return |
+|:--------|:-------|
+|[widthChanged()]| float( Staff width in pixels )|
+|[timeSignatureChanged()]| tuple(int(left_divisor), int(right_divisor)) |
+|[bpmChanged()]| float(bpm)|
+|[quantizeChanged()]| object(DStaff.Quantize) |
+|[changed()]| None|
 
-[More on signals]()
+[More on signals](/signals.html)
 
 | Functions |
 |:----------|
@@ -53,18 +53,10 @@ The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120
 
 
 
-### Signal Usage
-```python
-staff = DStaff()
 
-def userFunction(width):
-  print(width)
 
-staff.widthChanged.connect(userFunction)
-staff.beats += 4
 
-# >>> 200.0
-```
+
 
 ***
 
