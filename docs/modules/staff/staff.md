@@ -8,7 +8,7 @@ nav_order: 1
 
 # DawTools.DStaff
 
-The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120-fps24) class provides a surface to manage musical timing. [More...](staff.html#detaileddescriptiom)
+The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120-fps24) class provides a surface to manage musical timing. [More...](staff.html#detailed-description)
 
 | Inheritance            |                 |
 |:-----------------------|:----------------|
@@ -17,19 +17,31 @@ The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120
 
 ***
 
+| Functions |
+|:----------|
+|def [setBpm(bpm)]()|
+|def [bpm()]()|
+
+| Inner Classes | Functions |
+|:--------------|:----------|
+|class [DStaff.Beats]()||
+|| def [add()]()        |
+|| def [remove()]()     |
+|class [DStaff.Bars]() ||
+|| def [add()]()        |
+|| def [remove()]()     |
+
+| Signals |
+|:--------|
+|[widthChanged()](staff.html)|
+|[timeSignatureChanged()](staff.html)|
+|[bpmChanged()](staff.html)|
+|[quantizeChanged()](staff.html)|
+|[changed()](staff.html)|
+
+
+
 ## Detailed Description
-
-
-## Signals
-> widthChanged(float(width in pixels))
->
-> timeSignatureChanged(tuple(BeatsPerBar, BeatDuration))
->
-> bpmChanged(float(BPM))
->
-> quantizeChanged(object(Quantize Inner Class))
->
-> changed()
 
 ### Signal Usage
 ```python
