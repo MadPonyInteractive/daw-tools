@@ -1,10 +1,14 @@
-## Daw Tools Documentation
+---
+layout: default
+title: Python Daw Tools
+nav_order: 0
+---
 
-### This project documentation is Under construction...
+# Python Daw Tools
 
 ***
 
-The initial aim is to provide PyQt/PySide widgets to aid on daw type projects.
+The initial aim of this project is to provide PyQt/PySide widgets to aid on daw type projects.
 
 The project is build using PySide but can easly be ported to PyQt by editing main.py imports.
 
@@ -14,8 +18,8 @@ Current Versions and dependencies
 * PySide Version 6.1.2
 
 
-USAGE
-=====
+## USAGE
+
 Download and add daw_tools directory to your python project, then:
 
 ```python
