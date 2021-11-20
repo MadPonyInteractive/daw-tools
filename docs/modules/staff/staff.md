@@ -21,17 +21,30 @@ The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120
 |:----------|
 |def [setBpm(bpm)]()|
 |def [bpm()]()|
+|def [setTimeSignature()]()|
+|def [timeSignature()]()|
+|def [setBeatsPerBar()]()|
+|def [beatsPerBar()]()|
+|def [setBeatDuration()]()|
+|def [beatDuration()]()|
+|def [setPps()]()|
+|def [pps()]()|
+|def [width()]()|
+|def [seconds()]()|
+|def [setFps()]()|
+|def [fps()]()|
+|def [frames()]()|
 
 | Inner Classes |
 |:--------------|
 |class [DStaff.Quantize](staff.html#dawtoolsdstaffquantize)|
+|class [DStaff.Beats](staff.html#innerclassdawtoolsdstaffbeats)|
 |class [DStaff.Bars](staff.html#dawtoolsdstaffbars)|
-|class [DStaff.Beats](staff.html#dawtoolsdstaffbeats)|
-|class [DStaff.WholeNote](staff.html#dawtoolsdstaffwholenote)|
 |class [DStaff.Beat](staff.html#dawtoolsdstaffbeat)|
 |class [DStaff.Bar](staff.html#dawtoolsdstaffbar)|
 |class [DStaff.Frame](staff.html#dawtoolsdstaffframe)|
 |class [DStaff.Sample](staff.html#dawtoolsdstaffsample)|
+|class [DStaff.WholeNote](staff.html#dawtoolsdstaffwholenote)|
 
 | Signals | Return |
 |:--------|:-------|
@@ -43,24 +56,39 @@ The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120
 
 [More on signals](/signals.html)
 
-| Functions |
-|:----------|
-| def [add()]()    |
-| def [remove()]() |
-
 ## Detailed Description
 
+DawTools is a music based project and as such, several of its widgets and classes
+depend heavily on musical timing calculations.
 
+The DawTools.DStaff class aims to facilitate a structure that takes care of musical unit
+calculations such as beats per minute (BPM), frames per second (FPS), pixels per second or
+how many pixels should represent a second (PPS), samples (hertz) how many samples should
+be in 1 second, how long is a whole note, time signature, etc...
 
+All widgets and classes that need some sort of timing depend on this class for their calculations.
 
+In most projects you will only need 1 instance of this class and then pass it to any dependent
+classes or widgets. Then by changing this class settings , all connected widgets will respond
+appropriately.
 
-
-
+In a big project like a digital audio workstation (daw) for example, you may need several instances.
+Perhaps you will have the track timeline/viewport independent of the piano roll. Or you
+might need a separate staff for a sequencer.
 
 
 ***
 
-### class DawTools.DStaff(time_signature=(4,4), beats=0, bars=0, bpm=120, fps=24)
+### class DawTools.DStaff()
+* Parameters
+
+  * **time_signature** - `tuple or string` -> default = (4,4) '4/4'
+  * **beats** - `int` -> default = 0
+  * **bars** - `int` -> default = 0
+  * **bpm** - `float or int` -> default = 120
+  * **fps** - `int` -> default = 24
+
+Constructs a DStaff object.
 
 ***
 
@@ -216,9 +244,24 @@ The DawTools.DStaff class has several inner classes that provide a consistent wa
 
 ***
 
-## DawTools.DStaff.Beats
+## Inner Class DawTools.DStaff.Beats
 
-Calling this inner class will return the full amount of beats in the staff
+| Functions |
+|:----------|
+| def [add()]()    |
+| def [remove()]() |
+| def [clear()]() |
+| def [set()]() |
+| def [extra()]() |
+
+***
+
+### Inner Class DawTools.DStaff.Beats()
+* Return type
+
+  * `int`
+
+Returns the current amount of beats in staff.
 
 ```python
 staff = DStaff(beats=4)
@@ -226,6 +269,28 @@ staff = DStaff(beats=4)
 print(staff.beats())
 # >>> 4
 ```
+
+***
+
+### Inner Class DawTools.DStaff.Beats
+* Return type
+
+  * `iterator`
+
+Returns an iterator with pixel X positions
+
+```python
+staff = DStaff(beats=4)
+
+for pixelX in staff.beats:
+  print(pixelX)
+# >>> 0.0
+# >>> 50.0
+# >>> 100.0
+# >>> 150.0
+```
+
+### Usage
 
 You can add or remove beats using the following methods
 
@@ -304,15 +369,78 @@ This is very useful for placing measurement lines and positioning items on a UI.
 
 ## DawTools.DStaff.Bars
 
-This inner class has the same methods as the DawTools.DStaff.Beats class
+This inner class has the same methods and works in the same way as the
+[DawTools.DStaff.Beats](staff.html#innerclassdawtoolsdstaffbeats)
+class with the exception of the .extra() method for beats.
 
-with the exception of the .extra() method for beats.
+| Functions |
+|:----------|
+| def [add()]()    |
+| def [remove()]() |
+| def [clear()]() |
+| def [set()]() |
 
 ***
 
-## DawTools.DStaff.Quantize
+## Inner Class DawTools.DStaff.Quantize
 
-This inner class is responsible for all the quantization.
+This inner class is responsible for all the quantization in DawTools.DStaff.
+
+It provides methods to set and retrieve quantization values as well a list of
+pixel X positions when iterated.
+
+| Functions |
+|:----------|
+| def [value()]()|
+| def [setValue()]()|
+| def [type()]()|
+| def [setType()]()|
+| def [tuplet()]()|
+| def [setTuplet()]()|
+| def [swingPercent()]()|
+| def [setSwingPercent()]()|
+| def [ms()]()|
+| def [seconds()]()|
+| def [pixels()]()|
+| def [frames()]()|
+| def [samples()]()|
+
+
+### Inner Class DawTools.DStaff.Quantize()
+* Return type
+
+  * `int`
+
+Returns the current quantize value.
+
+```python
+staff = DStaff()
+
+print(staff.quantize())
+# >>> 8
+```
+
+***
+
+### Inner Class DawTools.DStaff.Quantize
+* Return type
+
+  * `iterator`
+
+Returns an iterator with pixel X positions
+
+```python
+staff = DStaff(beats=2)
+
+for pixelX in staff.quantize:
+  print(pixelX)
+
+# >>> 0.0
+# >>> 25.00
+# >>> 50.00
+# >>> 75.00
+# >>> 100.0
+```
 
 When called, it retrieves the current quantize value but you can also get it by calling the .value() method.
 
@@ -393,6 +521,7 @@ If you think that was overwhelming, get ready for the swing beast.
 
 Just kidding is not that complicated... not XD
 
+```
 A swing with a percentage of 0% works just like a straight quantize
 
 but once we start increasing that percentage things start getting a little funky
@@ -400,6 +529,7 @@ but once we start increasing that percentage things start getting a little funky
 as the quantization position starts shifting forward in time, with the first position
 
 moving closer to the next beat and the second further away.
+```
 
 For this reason the DawTools.DStaff.Quantize methods(when in swing type) return a tuple
 
@@ -437,7 +567,6 @@ print(staff.quantize)
 
 As you can see that second value keeps drifting away as we increase the swing percentage.
 
-## DawTools.DStaff.Quantize Methods
 
 ### DawTools.DStaff.quantize.setValue(value)
 * Parameters
@@ -448,7 +577,7 @@ Sets the quantize value
 
 ***
 
-### DawTools.DStaff.quantize.fps()
+### DawTools.DStaff.quantize.value()
 * Return type
 
   * `int`
@@ -578,6 +707,15 @@ Returns a list with pixel positions for quantization
 ***
 
 As you may have noticed the last few DawTools.DStaff.Quantize methods...
+
+| Functions | Return |
+|:----------|:-------|
+|def ms()| Milliseconds in Quantize|
+|def seconds()| Seconds in Quantize|
+|def pixels()| Pixels in Quantize|
+|def frames()| Frames in Quantize|
+|def samples()| Samples in Quantize|
+
 ```python
 staff = DStaff(beats=2)
 print(staff.quantize.ms())
@@ -594,6 +732,16 @@ We have the same thing for the last Inner Classes bellow
 
 ## DawTools.DStaff.WholeNote
 
+| Functions | Return |
+|:----------|:-------|
+|def ms()| Milliseconds in WholeNote|
+|def seconds()| Seconds in WholeNote|
+|def pixels()| Pixels in WholeNote|
+|def frames()| Frames in WholeNote|
+|def samples()| Samples in WholeNote|
+|def beats()| Beats in WholeNote|
+|def bars()| Bars in WholeNote|
+
 ```python
 staff = DStaff()
 print(staff.wholeNote.ms())
@@ -608,6 +756,16 @@ print(staff.wholeNote.bars())
 ***
 
 ## DawTools.DStaff.Bar
+
+| Functions | Return |
+|:----------|:-------|
+|def ms()| Milliseconds in Bar|
+|def seconds()| Seconds in Bar|
+|def pixels()| Pixels in Bar|
+|def frames()| Frames in Bar|
+|def samples()| Samples in Bar|
+|def wholeNotes()| Whole Notes in Bar|
+|def beats()| Beats in Bar|
 
 ```python
 staff = DStaff()
@@ -624,6 +782,16 @@ print(staff.bar.beats())
 
 ## DawTools.DStaff.Beat
 
+| Functions | Return |
+|:----------|:-------|
+|def ms()| Milliseconds in Beat|
+|def seconds()| Seconds in Beat|
+|def pixels()| Pixels in Beat|
+|def frames()| Frames in Beat|
+|def samples()| Samples in Beat|
+|def wholeNotes()| Whole Notes in Beat|
+|def bars()| Bars in Beat|
+
 ```python
 staff = DStaff()
 print(staff.beat.ms())
@@ -639,6 +807,16 @@ print(staff.beat.bars())
 
 ## DawTools.DStaff.Frame
 
+| Functions | Return |
+|:----------|:-------|
+|def ms()| Milliseconds in Frame|
+|def seconds()| Seconds in Frame|
+|def pixels()| Pixels in Frame|
+|def samples()| Samples in Frame|
+|def wholeNotes()| Whole Notes in Frame|
+|def beats()| Beats in Frame|
+|def bars()| Bars in Frame|
+
 ```python
 staff = DStaff()
 print(staff.frame.ms())
@@ -653,6 +831,16 @@ print(staff.frame.bars())
 ***
 
 ## DawTools.DStaff.Sample
+
+| Functions | Return |
+|:----------|:-------|
+|def ms()| Milliseconds in Sample|
+|def seconds()| Seconds in Sample|
+|def pixels()| Pixels in Sample|
+|def frames()| Frames in Sample|
+|def wholeNotes()| Whole Notes in Sample|
+|def beats()| Beats in Sample|
+|def bars()| Bars in Sample|
 
 ```python
 staff = DStaff()
