@@ -3,3 +3,7 @@ description: [PySide/PyQt widgets for daw projects]
 remote_theme: pmarsceill/just-the-docs
 color_scheme: "mpi"
 
+# Aux links for the upper right navigation
+aux_links:
+  "DawTools on GitHub":
+    - "//github.com/MadPonyInteractive/daw-tools"
