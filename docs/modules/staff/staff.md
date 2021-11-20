@@ -242,6 +242,15 @@ Returns how many frames in staff
 
 ## Inner Class DawTools.DStaff.Beats
 
+This inner class is used to manage the amount of beats in the staff.
+You can use it to add, remove, set and clear the amount of beats in the staff.
+
+It also provides a handy iterator to retrieve pixel X positions for each bar.
+
+The [DawTools.DStaff.Beats](staff.html#inner-class-dawtoolsdstaffbars) class
+does not have further documentation because it works exactly like this class
+apart from the extra() method that is exclusive for beats.
+
 | Functions |
 |:----------|
 | def add()|
@@ -315,11 +324,11 @@ You can also use the .clear() and .set() methods
 ```python
 staff = DStaff()
 
-print(staff.beats.set(4))
+staff.beats.set(4)
 print(staff.beats())
 # >>> 4
 
-print(staff.beats.clear())
+staff.beats.clear()
 print(staff.beats())
 # >>> 0
 ```
@@ -455,9 +464,9 @@ print(staff.quantize)
 # >>> Value: 1/4
 ```
 
-Like the DawTools.DStaff.Beat and DawTools.DStaff.Bar the DawTools.DStaffQuantize inner class can also retrieve a list of
-
-pixel position using list(staff.quantize) or simply iterating with a for loop.
+Like the DawTools.DStaff.Beat and DawTools.DStaff.Bar the DawTools.DStaffQuantize inner
+class can also retrieve a list of pixel position using list(staff.quantize)
+or simply iterating with a for loop.
 
 ```python
 staff = DStaff(beats=1)
