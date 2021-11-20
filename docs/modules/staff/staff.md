@@ -342,8 +342,7 @@ So (1 bar = 4 beats) + 5 beats = 2 bars and 9 beats in staff, leaving 1 extra be
 
 ### Listing Beats and Bars
 
-The DawTools.DStaff.
-## Inner Class DawTools.DStaff.Bars and the DawTools.DStaff.Quantize inner classes have a handy iterator for retrieving pixel positions.
+Inner Class DawTools.DStaff.Bars and the DawTools.DStaff.Quantize inner classes have a handy iterator for retrieving pixel positions.
 
 ```python
 staff = DStaff(bars=2)
@@ -695,7 +694,7 @@ Returns a list with pixel positions for quantization
 
 ***
 
-As you may have noticed the last few DawTools.DStaff.Quantize methods 
+As you may have noticed the last few DawTools.DStaff.Quantize methods
 are helper methods to find out how many of 1 thing is in the other.
 
 | Functions | Return |
