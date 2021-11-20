@@ -24,8 +24,14 @@ The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120
 
 | Inner Classes |
 |:--------------|
-|[DStaff.Beats]()|
-|[DStaff.Bars]()|
+|class [DStaff.Quantize](staff.html#DawTools.DStaff.Quantize)|
+|class [DStaff.Bars](staff.html#DawTools.DStaff.Bars)|
+|class [DStaff.Beats](staff.html#DawTools.DStaff.Beats)|
+|class [DStaff.WholeNote](staff.html#DawTools.DStaff.WholeNote)|
+|class [DStaff.Beat](staff.html#DawTools.DStaff.Beat)|
+|class [DStaff.Bar](staff.html#DawTools.DStaff.Bar)|
+|class [DStaff.Frame](staff.html#DawTools.DStaff.Frame)|
+|class [DStaff.Sample](staff.html#DawTools.DStaff.Sample)|
 
 | Signals |
 |:--------|
@@ -34,16 +40,17 @@ The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120
 |[bpmChanged()](staff.html)|
 |[quantizeChanged()](staff.html)|
 |[changed()](staff.html)|
-
+[More on signals]()
 
 | Functions |
 |:----------|
 | def [add()]()    |
 | def [remove()]() |
 
-
-
 ## Detailed Description
+
+
+
 
 ### Signal Usage
 ```python
