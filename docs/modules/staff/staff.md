@@ -40,6 +40,7 @@ The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120
 |[bpmChanged()](staff.html)|
 |[quantizeChanged()](staff.html)|
 |[changed()](staff.html)|
+
 [More on signals]()
 
 | Functions |
