@@ -464,9 +464,10 @@ print(staff.quantize)
 # >>> Value: 1/4
 ```
 
-Like the DawTools.DStaff.Beat and DawTools.DStaff.Bar the DawTools.DStaffQuantize inner
-class can also retrieve a list of pixel position using list(staff.quantize)
-or simply iterating with a for loop.
+Like the inner classes
+* [DawTools.DStaff.Beats](staff.html#inner-class-dawtoolsdstaffbeats)
+* [DawTools.DStaff.Bars](staff.html#inner-class-dawtoolsdstaffbars)
+it can also be iterated for retrieval of pixel positions.
 
 ```python
 staff = DStaff(beats=1)
