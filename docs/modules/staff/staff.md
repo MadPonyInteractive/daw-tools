@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Class - Staff
+title: Staff
 parent: staff.py
 grand_parent: Modules
 nav_order: 1
