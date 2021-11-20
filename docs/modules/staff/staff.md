@@ -34,9 +34,9 @@ The [DStaff](staff.html#class-dawtoolsdstaff) class provides a surface to manage
 |def [setFps()](staff.html#dawtoolsdstaffsetfpsfps)|
 |def [fps()](staff.html#dawtoolsdstafffps)|
 |def [frames()](staff.html#dawtoolsdstaffframes)|
-|def [setSampleRate()](staff.html#dawtoolsdstaffsetfpsfps)|
-|def [sampleRate()](staff.html#dawtoolsdstafffps)|
-|def [samples()](staff.html#dawtoolsdstaffframes)|
+|def [setSampleRate()](staff.html#dawtoolsdstaffsetsampleratehz)|
+|def [sampleRate()](staff.html#dawtoolsdstaffsamplerate)|
+|def [samples()](staff.html#dawtoolsdstaffsamples)|
 
 Each one of the bellow inner classes has a set of their own functions
 
