@@ -35,6 +35,8 @@ The [DStaff](staff.html#class-dawtoolsdstaff) class provides a surface to manage
 |def [fps()](staff.html#dawtoolsdstafffps)|
 |def [frames()](staff.html#dawtoolsdstaffframes)|
 
+Each on of the bellow inner classes has a set of their own functions
+
 | Inner Classes |
 |:--------------|
 |class [DStaff.Quantize](staff.html#inner-class-dawtoolsdstaffquantize)|
@@ -54,7 +56,7 @@ The [DStaff](staff.html#class-dawtoolsdstaff) class provides a surface to manage
 |quantizeChanged()| object(DStaff.Quantize) |
 |changed()| None|
 
-[More on signals](/signals.html)
+[More on signals](https://madponyinteractive.github.io/daw-tools/signals.html)
 
 ## Detailed Description
 
