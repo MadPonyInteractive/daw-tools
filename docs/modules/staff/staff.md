@@ -8,7 +8,7 @@ nav_order: 1
 
 # DawTools.DStaff
 
-The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120-fps24) class provides a surface to manage musical timing. [More...](staff.html#detailed-description)
+The [DStaff](staff.html#class-dawtoolsdstaff) class provides a surface to manage musical timing. [More...](staff.html#detailed-description)
 
 | Inheritance            |                 |
 |:-----------------------|:----------------|
@@ -19,32 +19,32 @@ The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120
 
 | Functions |
 |:----------|
-|def [setBpm(bpm)]()|
-|def [bpm()]()|
-|def [setTimeSignature()]()|
-|def [timeSignature()]()|
-|def [setBeatsPerBar()]()|
-|def [beatsPerBar()]()|
-|def [setBeatDuration()]()|
-|def [beatDuration()]()|
-|def [setPps()]()|
-|def [pps()]()|
-|def [width()]()|
-|def [seconds()]()|
-|def [setFps()]()|
-|def [fps()]()|
-|def [frames()]()|
+|def [setBpm(bpm)](staff.html#dawtoolsdstaffsetbpmbpm)|
+|def [bpm()](staff.html#dawtoolsdstaffbpm)|
+|def [setTimeSignature()](staff.html#dawtoolsdstaffsettimesignaturetime_sig)|
+|def [timeSignature()](staff.html#dawtoolsdstafftimesignatureasstringfalse)|
+|def [setBeatsPerBar()](staff.html#dawtoolsdstaffsetbeatsperbarbpb)|
+|def [beatsPerBar()](staff.html#dawtoolsdstaffbeatsperbar)|
+|def [setBeatDuration()](staff.html#dawtoolsdstaffsetbeatdurationbd)|
+|def [beatDuration()](staff.html#dawtoolsdstaffbeatduration)|
+|def [setPps()](staff.html#dawtoolsdstaffsetppspps)|
+|def [pps()](staff.html#dawtoolsdstaffpps)|
+|def [width()](staff.html#dawtoolsdstaffwidth)|
+|def [seconds()](staff.html#dawtoolsdstaffseconds)|
+|def [setFps()](staff.html#dawtoolsdstaffsetfpsfps)|
+|def [fps()](staff.html#dawtoolsdstafffps)|
+|def [frames()](staff.html#dawtoolsdstaffframes)|
 
 | Inner Classes |
 |:--------------|
-|class [DStaff.Quantize](staff.html#dawtoolsdstaffquantize)|
-|class [DStaff.Beats](staff.html#innerclassdawtoolsdstaffbeats)|
-|class [DStaff.Bars](staff.html#dawtoolsdstaffbars)|
-|class [DStaff.Beat](staff.html#dawtoolsdstaffbeat)|
-|class [DStaff.Bar](staff.html#dawtoolsdstaffbar)|
-|class [DStaff.Frame](staff.html#dawtoolsdstaffframe)|
-|class [DStaff.Sample](staff.html#dawtoolsdstaffsample)|
-|class [DStaff.WholeNote](staff.html#dawtoolsdstaffwholenote)|
+|class [DStaff.Quantize](staff.html#inner-class-dawtoolsdstaffquantize)|
+|class [DStaff.Beats](staff.html#inner-class-dawtoolsdstaffbeats)|
+|class [DStaff.Bars](staff.html#inner-class-dawtoolsdstaffbars)|
+|class [DStaff.Beat](staff.html#inner-class-dawtoolsdstaffbeat)|
+|class [DStaff.Bar](staff.html#inner-class-dawtoolsdstaffbar)|
+|class [DStaff.Frame](staff.html#inner-class-dawtoolsdstaffframe)|
+|class [DStaff.Sample](staff.html#inner-class-dawtoolsdstaffsample)|
+|class [DStaff.WholeNote](staff.html#inner-class-dawtoolsdstaffwholenote)|
 
 | Signals | Return |
 |:--------|:-------|
@@ -238,21 +238,15 @@ Returns how many frames in staff
 
 ***
 
-## Inner Classes
-
-The DawTools.DStaff class has several inner classes that provide a consistent way to access their parameters
-
-***
-
 ## Inner Class DawTools.DStaff.Beats
 
 | Functions |
 |:----------|
-| def [add()]()    |
-| def [remove()]() |
-| def [clear()]() |
-| def [set()]() |
-| def [extra()]() |
+| def add()|
+| def remove()|
+| def clear()|
+| def set()|
+| def extra()|
 
 ***
 
@@ -342,14 +336,14 @@ print(staff.beats.extra())
 ```
 
 Notice in the example above that we added 1 bar and 5 beats on initialization.
-
 Because the staff default time signature is 4/4, 1 bar contains 4 beats.
 
 So (1 bar = 4 beats) + 5 beats = 2 bars and 9 beats in staff, leaving 1 extra beat.
 
 ### Listing Beats and Bars
 
-The DawTools.DStaff.Beats, DawTools.DStaff.Bars and the DawTools.DStaff.Quantize inner classes have a handy iterator for retrieving pixel positions.
+The DawTools.DStaff.
+## Inner Class DawTools.DStaff.Bars and the DawTools.DStaff.Quantize inner classes have a handy iterator for retrieving pixel positions.
 
 ```python
 staff = DStaff(bars=2)
@@ -367,18 +361,18 @@ This is very useful for placing measurement lines and positioning items on a UI.
 
 ***
 
-## DawTools.DStaff.Bars
+## Inner Class DawTools.DStaff.Bars
 
 This inner class has the same methods and works in the same way as the
-[DawTools.DStaff.Beats](staff.html#innerclassdawtoolsdstaffbeats)
+[DawTools.DStaff.Beats](staff.html#inner-class-dawtoolsdstaffbeats)
 class with the exception of the .extra() method for beats.
 
 | Functions |
 |:----------|
-| def [add()]()    |
-| def [remove()]() |
-| def [clear()]() |
-| def [set()]() |
+| def add()   |
+| def remove()|
+| def clear()|
+| def set()|
 
 ***
 
@@ -391,19 +385,19 @@ pixel X positions when iterated.
 
 | Functions |
 |:----------|
-| def [value()]()|
-| def [setValue()]()|
-| def [type()]()|
-| def [setType()]()|
-| def [tuplet()]()|
-| def [setTuplet()]()|
-| def [swingPercent()]()|
-| def [setSwingPercent()]()|
-| def [ms()]()|
-| def [seconds()]()|
-| def [pixels()]()|
-| def [frames()]()|
-| def [samples()]()|
+| def [setValue()](staff.html#dawtoolsdstaffquantizesetvaluevalue)|
+| def [value()](staff.html#dawtoolsdstaffquantizevalue)|
+| def [setType()](staff.html#dawtoolsdstaffquantizesettype_type)|
+| def [type()](staff.html#dawtoolsdstaffquantizetype)|
+| def [setTuplet()](staff.html#dawtoolsdstaffquantizesettuplettuplet)|
+| def [tuplet()](staff.html#dawtoolsdstaffquantizetuplet)|
+| def [setSwingPercent()](staff.html#dawtoolsdstaffquantizesetswingpercentpercent)|
+| def [swingPercent()](staff.html#dawtoolsdstaffquantizeswingpercent)|
+| def [ms()](staff.html#dawtoolsdstaffquantizems)|
+| def [seconds()](staff.html#dawtoolsdstaffquantizeseconds)|
+| def [pixels()](staff.html#dawtoolsdstaffquantizepixels)|
+| def [frames()](staff.html#dawtoolsdstaffquantizeframes)|
+| def [samples()](staff.html#dawtoolsdstaffquantizesamples)|
 
 
 ### Inner Class DawTools.DStaff.Quantize()
@@ -499,7 +493,6 @@ print(staff.quantize)
 The above is a 1/16 triplet
 
 With the .setTuplet() method you can use triplets (3,2), duplets (2,3), quintuplets (5,4),
-
 sextuplets (6,4), septuplets (7,4), nonuplets (9,8) and other weird tuplets you may fancy.
 
 ```python
@@ -523,16 +516,12 @@ Just kidding is not that complicated... not XD
 
 ```
 A swing with a percentage of 0% works just like a straight quantize
-
 but once we start increasing that percentage things start getting a little funky
-
 as the quantization position starts shifting forward in time, with the first position
-
 moving closer to the next beat and the second further away.
 ```
 
 For this reason the DawTools.DStaff.Quantize methods(when in swing type) return a tuple
-
 containing the first quantize position and the second position with its distance from the first.
 
 Sounds confusing but once you retrieve a swing list and draw lines on a ui it will all make sense.
@@ -706,7 +695,8 @@ Returns a list with pixel positions for quantization
 
 ***
 
-As you may have noticed the last few DawTools.DStaff.Quantize methods...
+As you may have noticed the last few DawTools.DStaff.Quantize methods 
+are helper methods to find out how many of 1 thing is in the other.
 
 | Functions | Return |
 |:----------|:-------|
@@ -724,13 +714,12 @@ print(staff.quantize.pixels())
 print(staff.quantize.frames())
 print(staff.quantize.samples())
 ```
-are helper methods to find out how many of 1 thing is in the other.
 
 We have the same thing for the last Inner Classes bellow
 
 ***
 
-## DawTools.DStaff.WholeNote
+## Inner Class DawTools.DStaff.WholeNote
 
 | Functions | Return |
 |:----------|:-------|
@@ -755,7 +744,7 @@ print(staff.wholeNote.bars())
 
 ***
 
-## DawTools.DStaff.Bar
+## Inner Class DawTools.DStaff.Bar
 
 | Functions | Return |
 |:----------|:-------|
@@ -780,7 +769,7 @@ print(staff.bar.beats())
 
 ***
 
-## DawTools.DStaff.Beat
+## Inner Class DawTools.DStaff.Beat
 
 | Functions | Return |
 |:----------|:-------|
@@ -805,7 +794,7 @@ print(staff.beat.bars())
 
 ***
 
-## DawTools.DStaff.Frame
+## Inner Class DawTools.DStaff.Frame
 
 | Functions | Return |
 |:----------|:-------|
@@ -830,7 +819,7 @@ print(staff.frame.bars())
 
 ***
 
-## DawTools.DStaff.Sample
+## Inner Class DawTools.DStaff.Sample
 
 | Functions | Return |
 |:----------|:-------|
