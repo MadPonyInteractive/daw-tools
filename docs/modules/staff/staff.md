@@ -247,7 +247,7 @@ You can use it to add, remove, set and clear the amount of beats in the staff.
 
 It also provides a handy iterator to retrieve pixel X positions for each bar.
 
-The [DawTools.DStaff.Beats](staff.html#inner-class-dawtoolsdstaffbars) class
+The [DawTools.DStaff.Bars](staff.html#inner-class-dawtoolsdstaffbars) class
 does not have further documentation because it works exactly like this class
 apart from the extra() method that is exclusive for beats.
 
