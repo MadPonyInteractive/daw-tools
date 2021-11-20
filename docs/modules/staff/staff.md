@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Class: Staff
+title: Class - Staff
 parent: staff.py
 nav_order: 2
 ---
