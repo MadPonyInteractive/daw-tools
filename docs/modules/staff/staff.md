@@ -35,7 +35,7 @@ The [DStaff](staff.html#class-dawtoolsdstaff) class provides a surface to manage
 |def [fps()](staff.html#dawtoolsdstafffps)|
 |def [frames()](staff.html#dawtoolsdstaffframes)|
 
-Each on of the bellow inner classes has a set of their own functions
+Each one of the bellow inner classes has a set of their own functions
 
 | Inner Classes |
 |:--------------|
