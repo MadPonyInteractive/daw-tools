@@ -2,7 +2,8 @@
 layout: default
 title: Class - Staff
 parent: staff.py
-nav_order: 2
+grand_parent: Modules
+nav_order: 1
 ---
 
 # Class: Staff
