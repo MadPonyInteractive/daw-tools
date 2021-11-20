@@ -39,9 +39,9 @@ Each one of the bellow inner classes has a set of their own functions
 
 | Inner Classes |
 |:--------------|
-|class [DStaff.Quantize](staff.html#inner-class-dawtoolsdstaffquantize)|
 |class [DStaff.Beats](staff.html#inner-class-dawtoolsdstaffbeats)|
 |class [DStaff.Bars](staff.html#inner-class-dawtoolsdstaffbars)|
+|class [DStaff.Quantize](staff.html#inner-class-dawtoolsdstaffquantize)|
 |class [DStaff.Beat](staff.html#inner-class-dawtoolsdstaffbeat)|
 |class [DStaff.Bar](staff.html#inner-class-dawtoolsdstaffbar)|
 |class [DStaff.Frame](staff.html#inner-class-dawtoolsdstaffframe)|
