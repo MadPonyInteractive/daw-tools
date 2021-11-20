@@ -1,10 +1,11 @@
 ---
 layout: default
-title: Python Daw Tools
+title: Home
 nav_order: 0
 ---
 
-# Python Daw Tools
+# DawTools 
+#### Digital Audio Workstation tools for Python
 
 ***
 
