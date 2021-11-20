@@ -22,14 +22,10 @@ The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120
 |def [setBpm(bpm)]()|
 |def [bpm()]()|
 
-| Inner Classes | Functions |
-|:--------------|:----------|
-|class [DStaff.Beats]()||
-|| def [add()]()        |
-|| def [remove()]()     |
-|class [DStaff.Bars]() ||
-|| def [add()]()        |
-|| def [remove()]()     |
+| Inner Classes |
+|:--------------|
+|[DStaff.Beats]()|
+|[DStaff.Bars]()|
 
 | Signals |
 |:--------|
@@ -38,6 +34,12 @@ The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120
 |[bpmChanged()](staff.html)|
 |[quantizeChanged()](staff.html)|
 |[changed()](staff.html)|
+
+
+| Functions |
+|:----------|
+| def [add()]()    |
+| def [remove()]() |
 
 
 
