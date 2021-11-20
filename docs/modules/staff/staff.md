@@ -464,10 +464,9 @@ print(staff.quantize)
 # >>> Value: 1/4
 ```
 
-Like the inner classes
-* [DawTools.DStaff.Beats](staff.html#inner-class-dawtoolsdstaffbeats)
-* [DawTools.DStaff.Bars](staff.html#inner-class-dawtoolsdstaffbars)
-it can also be iterated for retrieval of pixel positions.
+Like the inner classes [DawTools.DStaff.Beats](staff.html#inner-class-dawtoolsdstaffbeats)
+and [DawTools.DStaff.Bars](staff.html#inner-class-dawtoolsdstaffbars) it can also be
+iterated for retrieval of pixel positions.
 
 ```python
 staff = DStaff(beats=1)
