@@ -34,6 +34,9 @@ The [DStaff](staff.html#class-dawtoolsdstaff) class provides a surface to manage
 |def [setFps()](staff.html#dawtoolsdstaffsetfpsfps)|
 |def [fps()](staff.html#dawtoolsdstafffps)|
 |def [frames()](staff.html#dawtoolsdstaffframes)|
+|def [setSampleRate()](staff.html#dawtoolsdstaffsetfpsfps)|
+|def [sampleRate()](staff.html#dawtoolsdstafffps)|
+|def [samples()](staff.html#dawtoolsdstaffframes)|
 
 Each one of the bellow inner classes has a set of their own functions
 
@@ -97,7 +100,7 @@ Constructs a DStaff object.
 ### DawTools.DStaff.setBpm(bpm)
 * Parameters
 
-  * **bpm** - `float or int`
+  * **bpm** - `float or int` -> default = 120
 
 Sets the staff BPM
 
@@ -115,7 +118,7 @@ Returns current BPM
 ### DawTools.DStaff.setTimeSignature(time_sig)
 * Parameters
 
-  * **time_sig** - `tuple or string`
+  * **time_sig** - `tuple or string` -> default = 4/4
 
 Sets the time signature (beats per bar, beat duration)
 
@@ -127,10 +130,10 @@ DawTools.DStaff.setTimeSignature(4,4)
 
 ***
 
-### DawTools.DStaff.timeSignature(asString=False)
+### DawTools.DStaff.timeSignature(asString)
 * Parameters
 
-  * **asString** - `boolean`
+  * **asString** - `boolean` -> default = False
 
 * Return type
 
@@ -143,7 +146,7 @@ Returns current time signature as tuple or as string if True is passed
 ### DawTools.DStaff.setBeatsPerBar(bpb)
 * Parameters
 
-  * **bpb** - `int`
+  * **bpb** - `int` -> default = 4
 
 Sets the time signature beats per bar
 
@@ -160,7 +163,7 @@ Returns the time signature beats per bar
 ### DawTools.DStaff.setBeatDuration(bd)
 * Parameters
 
-  * **bd** - `int`
+  * **bd** - `int` -> default = 4
 
 Sets the time signature beats duration
 
@@ -178,7 +181,7 @@ Returns the time signature beats duration
 ### DawTools.DStaff.setPps(pps)
 * Parameters
 
-  * **pps** - `float or int`
+  * **pps** - `float or int` -> default = 100
 
 Sets pixels per second
 
@@ -216,7 +219,7 @@ Returns how many seconds in staff
 ### DawTools.DStaff.setFps(fps)
 * Parameters
 
-  * **fps** - `int`
+  * **fps** - `int` -> default = 24
 
 Sets the Frames per second
 
@@ -236,7 +239,30 @@ Returns frames per second
 
   * `int`
 
-Returns how many frames in staff
+### DawTools.DStaff.setSampleRate(hz)
+* Parameters
+
+  * **hz** - `int` -> default = 44100
+
+Sets the Samples per second (sample rate)
+
+***
+
+### DawTools.DStaff.sampleRate()
+* Return type
+
+  * `int`
+
+Returns Samples per second (sample rate)
+
+***
+
+### DawTools.DStaff.samples()
+* Return type
+
+  * `int`
+
+Returns how many Samples in staff
 
 ***
 
