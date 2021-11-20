@@ -48,11 +48,11 @@ The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120
 
 | Signals | Return |
 |:--------|:-------|
-|[widthChanged()]| float( Staff width in pixels )|
-|[timeSignatureChanged()]| tuple(int(left_divisor), int(right_divisor)) |
-|[bpmChanged()]| float(bpm)|
-|[quantizeChanged()]| object(DStaff.Quantize) |
-|[changed()]| None|
+|widthChanged()| float( Staff width in pixels )|
+|timeSignatureChanged()| tuple(int(left_divisor), int(right_divisor)) |
+|bpmChanged()| float(bpm)|
+|quantizeChanged()| object(DStaff.Quantize) |
+|changed()| None|
 
 [More on signals](/signals.html)
 
