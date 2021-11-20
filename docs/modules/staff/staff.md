@@ -8,7 +8,7 @@ nav_order: 1
 
 # DawTools.DStaff
 
-The [DStaff](#dawtools.dstaff.beats) class provides a surface to manage musical timing. [More...](#detaileddescriptiom)
+The [DStaff](staff.html#class-dawtoolsdstafftime_signature44-beats0-bars0-bpm120-fps24) class provides a surface to manage musical timing. [More...](staff.html#detaileddescriptiom)
 
 | Inheritance            |                 |
 |:-----------------------|:----------------|
