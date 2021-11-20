@@ -1,3 +1,5 @@
 title: [Python DAW TOOLS]
 description: [PySide/PyQt widgets for daw projects]
-theme: jekyll-theme-hacker
+remote_theme: pmarsceill/just-the-docs
+color_scheme: "dark"
+
