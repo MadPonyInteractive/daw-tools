@@ -424,13 +424,13 @@ class with the exception of the .extra() method for beats.
 | def [setSwingPercent()](staff.html#dawtoolsdstaffquantizesetswingpercentpercent)|
 | def [swingPercent()](staff.html#dawtoolsdstaffquantizeswingpercent)|
 
-| Chains | Return |
-|:----------|:-------|
-| def [ms()](staff.html#dawtoolsdstaffquantizems)|
-| def [seconds()](staff.html#dawtoolsdstaffquantizeseconds)|
-| def [pixels()](staff.html#dawtoolsdstaffquantizepixels)|
-| def [frames()](staff.html#dawtoolsdstaffquantizeframes)|
-| def [samples()](staff.html#dawtoolsdstaffquantizesamples)|
+| Chains |
+|:----------|
+| def [ms()](staff.html#dawtoolsdstaffquantizemultipliermsiterations)|
+| def [seconds()](staff.html#dawtoolsdstaffquantizemultipliersecondsiterations)|
+| def [pixels()](staff.html#dawtoolsdstaffquantizemultiplierpixelsiterations)|
+| def [frames()](staff.html#dawtoolsdstaffquantizemultiplierframesiterations)|
+| def [samples()](staff.html#dawtoolsdstaffquantizemultipliersamplesiterations)|
 
 This inner class is responsible for all the quantization in DawTools.DStaff.
 It provides methods to set and retrieve quantization values.
@@ -825,7 +825,6 @@ print(staff.beat.pixels(iterations))
 Iterating over this generator will retrieve pixel X positions.
 ```python
 staff = DStaff()
-
 for pixel in staff.beat.pixels(4):
     print(pixel)
 # >>> 0.0    > beat 1 at pixel 0
