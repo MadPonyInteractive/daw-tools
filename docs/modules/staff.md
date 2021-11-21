@@ -636,7 +636,7 @@ If (iterations) is passed it ignores (multiplier) and returns a generator.
 When the quantize type is set to swing, it returns a
 tuple(ms till first,ms from first till second)
 
-[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+[More about DStaff chaining methods...](staff.html#dstaff-chaining-methods)
 
 ***
 
@@ -655,7 +655,7 @@ If (iterations) is passed it ignores (multiplier) and returns a generator.
 When the quantize type is set to swing, it returns a
 tuple(seconds till first,seconds from first till second)
 
-[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+[More about DStaff chaining methods...](staff.html#dstaff-chaining-methods)
 
 ***
 
@@ -674,7 +674,7 @@ If (iterations) is passed it ignores (multiplier) and returns a generator.
 When the quantize type is set to swing, it returns a
 tuple(pixels till first,pixels from first till second)
 
-[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+[More about DStaff chaining methods...](staff.html#dstaff-chaining-methods)
 
 ***
 
@@ -693,7 +693,7 @@ If (iterations) is passed it ignores (multiplier) and returns a generator.
 When the quantize type is set to swing, it returns a
 tuple(frames till first,frames from first till second)
 
-[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+[More about DStaff chaining methods...](staff.html#dstaff-chaining-methods)
 
 ***
 
@@ -712,7 +712,7 @@ If (iterations) is passed it ignores (multiplier) and returns a generator.
 When the quantize type is set to swing, it returns a
 tuple(samples till first,samples from first till second)
 
-[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+[More about DStaff chaining methods...](staff.html#dstaff-chaining-methods)
 
 ***
 
@@ -728,7 +728,7 @@ tuple(samples till first,samples from first till second)
 |def beats()| Beats in WholeNote|
 |def bars()| Bars in WholeNote|
 
-[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+[More about DStaff chaining methods...](staff.html#dstaff-chaining-methods)
 
 ***
 
@@ -744,7 +744,7 @@ tuple(samples till first,samples from first till second)
 |def wholeNotes()| Whole Notes in Bar|
 |def beats()| Beats in Bar|
 
-[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+[More about DStaff chaining methods...](staff.html#dstaff-chaining-methods)
 
 ***
 
@@ -760,7 +760,7 @@ tuple(samples till first,samples from first till second)
 |def wholeNotes()| Whole Notes in Beat|
 |def bars()| Bars in Beat|
 
-[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+[More about DStaff chaining methods...](staff.html#dstaff-chaining-methods)
 
 ***
 
@@ -776,7 +776,7 @@ tuple(samples till first,samples from first till second)
 |def beats()| Beats in Frame|
 |def bars()| Bars in Frame|
 
-[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+[More about DStaff chaining methods...](staff.html#dstaff-chaining-methods)
 
 ***
 
@@ -792,7 +792,7 @@ tuple(samples till first,samples from first till second)
 |def beats()| Beats in Sample|
 |def bars()| Bars in Sample|
 
-[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+[More about DStaff chaining methods...](staff.html#dstaff-chaining-methods)
 
 ***
 
