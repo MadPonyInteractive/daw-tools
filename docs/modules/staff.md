@@ -302,7 +302,7 @@ print(staff.beats())
 
 ***
 
-### Inner Class DawTools.DStaff.Beats
+### Inner Class DawTools.DStaff.Beats.__iter__()
 * Return type
 
   * `iterator`
@@ -413,11 +413,6 @@ class with the exception of the .extra() method for beats.
 
 ## Inner Class DawTools.DStaff.Quantize
 
-This inner class is responsible for all the quantization in DawTools.DStaff.
-
-It provides methods to set and retrieve quantization values as well a list of
-pixel X positions when iterated.
-
 | Functions |
 |:----------|
 | def [setValue()](staff.html#dawtoolsdstaffquantizesetvaluevalue)|
@@ -428,38 +423,27 @@ pixel X positions when iterated.
 | def [tuplet()](staff.html#dawtoolsdstaffquantizetuplet)|
 | def [setSwingPercent()](staff.html#dawtoolsdstaffquantizesetswingpercentpercent)|
 | def [swingPercent()](staff.html#dawtoolsdstaffquantizeswingpercent)|
+
+| Chains | Return |
+|:----------|:-------|
 | def [ms()](staff.html#dawtoolsdstaffquantizems)|
 | def [seconds()](staff.html#dawtoolsdstaffquantizeseconds)|
 | def [pixels()](staff.html#dawtoolsdstaffquantizepixels)|
 | def [frames()](staff.html#dawtoolsdstaffquantizeframes)|
 | def [samples()](staff.html#dawtoolsdstaffquantizesamples)|
 
+This inner class is responsible for all the quantization in DawTools.DStaff.
+It provides methods to set and retrieve quantization values.
 
-### Inner Class DawTools.DStaff.Quantize()
-* Return type
-
-  * `int`
-
-Returns the current quantize value.
-
-```python
-staff = DStaff()
-
-print(staff.quantize())
-# >>> 8
-```
-
-***
-
-### Inner Class DawTools.DStaff.Quantize
-* Return type
-
-  * `iterator`
-
-Returns an iterator with pixel X positions
+Like the inner classes [DawTools.DStaff.Beats](staff.html#inner-class-dawtoolsdstaffbeats)
+and [DawTools.DStaff.Bars](staff.html#inner-class-dawtoolsdstaffbars) it can also be
+iterated for retrieval of pixel positions.
 
 ```python
 staff = DStaff(beats=2)
+
+print(list(staff.quantize))
+# >>> [Decimal('0.0'), Decimal('25.00'), Decimal('50.00'), Decimal('75.00'), Decimal('100.0')]
 
 for pixelX in staff.quantize:
   print(pixelX)
@@ -469,41 +453,6 @@ for pixelX in staff.quantize:
 # >>> 50.00
 # >>> 75.00
 # >>> 100.0
-```
-
-When called, it retrieves the current quantize value but you can also get it by calling the .value() method.
-
-```python
-staff = DStaff(bars=2)
-
-print(staff.quantize())
-# >>> 8
-
-staff.quantize.setValue(4)
-print(staff.quantize.value())
-# >>> 4
-
-print(staff.quantize)
-# >>> DawTools.DStaff->Inner Class: Quantize
-# >>> Type: Straight
-# >>> Value: 1/4
-```
-
-Like the inner classes [DawTools.DStaff.Beats](staff.html#inner-class-dawtoolsdstaffbeats)
-and [DawTools.DStaff.Bars](staff.html#inner-class-dawtoolsdstaffbars) it can also be
-iterated for retrieval of pixel positions.
-
-```python
-staff = DStaff(beats=1)
-
-print(list(staff.quantize))
-# >>> [Decimal('0.0'), Decimal('25.00'), Decimal('50.0')]
-
-for pixelXPos in staff.quantize:
-  print(pixelXPos)
-# >>> 0.0
-# >>> 25.00
-# >>> 50.0
 ```
 
 ### Tuplets & Swing
@@ -538,7 +487,7 @@ staff.quantize.setValue(4)# 1/4
 staff.quantize()# 4
 staff.quantize.setTuplet(5,4)# A Quintuplet
 
-print(staff.quantize)
+print(staff.quantize())
 # >>> DawTools.DStaff->Inner Class: Quantize
 # >>> Type: Tuplet
 # >>> Value: 1/4
@@ -591,6 +540,12 @@ print(staff.quantize)
 
 As you can see that second value keeps drifting away as we increase the swing percentage.
 
+### Inner Class DawTools.DStaff.Quantize.__iter__()
+* Return type
+
+  * `iterator`
+
+Returns an iterator with pixel X positions
 
 ### DawTools.DStaff.quantize.setValue(value)
 * Parameters
@@ -666,97 +621,104 @@ Returns the quantize swing percentage
 
 ***
 
-### DawTools.DStaff.quantize.ms()
+### DawTools.DStaff.quantize(multiplier).ms(iterations)
+* Parameters
+  * **multiplier** - `float` -> default = 1.0
+  * **iterations** - `int`
+
 * Return type
 
   * `float` or `tuple` if swing type
 
-Returns how many milliseconds in 1 quantize unit
+Returns how many milliseconds in (multiplier) quantize units
+If (iterations) is passed it ignores (multiplier) and returns a generator.
+
 When the quantize type is set to swing, it returns a
 tuple(ms till first,ms from first till second)
 
+[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+
 ***
 
-### DawTools.DStaff.quantize.seconds()
+### DawTools.DStaff.quantize(multiplier).seconds(iterations)
+* Parameters
+  * **multiplier** - `float` -> default = 1.0
+  * **iterations** - `int`
+
 * Return type
 
   * `float` or `tuple` if swing type
 
-Returns how many seconds in 1 quantize unit
+Returns how many seconds in (multiplier) quantize units
+If (iterations) is passed it ignores (multiplier) and returns a generator.
+
 When the quantize type is set to swing, it returns a
 tuple(seconds till first,seconds from first till second)
 
+[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+
 ***
 
-### DawTools.DStaff.quantize.pixels()
+### DawTools.DStaff.quantize(multiplier).pixels(iterations)
+* Parameters
+  * **multiplier** - `float` -> default = 1.0
+  * **iterations** - `int`
+
 * Return type
 
   * `float` or `tuple` if swing type
 
-Returns how many pixels in 1 quantize unit
+Returns how many pixels in (multiplier) quantize units
+If (iterations) is passed it ignores (multiplier) and returns a generator.
+
 When the quantize type is set to swing, it returns a
 tuple(pixels till first,pixels from first till second)
 
+[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+
 ***
 
-### DawTools.DStaff.quantize.frames()
+### DawTools.DStaff.quantize(multiplier).frames(iterations)
+* Parameters
+  * **multiplier** - `float` -> default = 1.0
+  * **iterations** - `int`
+
 * Return type
 
   * `float` or `tuple` if swing type
 
-Returns how many frames in 1 quantize unit
+Returns how many frames in (multiplier) quantize units
+If (iterations) is passed it ignores (multiplier) and returns a generator.
+
 When the quantize type is set to swing, it returns a
 tuple(frames till first,frames from first till second)
 
+[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+
 ***
 
-### DawTools.DStaff.quantize.samples()
+### DawTools.DStaff.quantize(multiplier).samples(iterations)
+* Parameters
+  * **multiplier** - `float` -> default = 1.0
+  * **iterations** - `int`
+
 * Return type
 
   * `float` or `tuple` if swing type
 
-Returns how many samples in 1 quantize unit
+Returns how many samples in (multiplier) quantize units
+If (iterations) is passed it ignores (multiplier) and returns a generator.
+
 When the quantize type is set to swing, it returns a
 tuple(samples till first,samples from first till second)
 
-***
-
-### DawTools.DStaff.quantize.__iter__()
-* Return type
-
-  * `iterator`
-
-Returns a list with pixel positions for quantization
-
-***
-
-As you may have noticed the last few DawTools.DStaff.Quantize methods
-are helper methods to find out how many of 1 thing is in the other.
-
-| Functions | Return |
-|:----------|:-------|
-|def ms()| Milliseconds in Quantize|
-|def seconds()| Seconds in Quantize|
-|def pixels()| Pixels in Quantize|
-|def frames()| Frames in Quantize|
-|def samples()| Samples in Quantize|
-
-```python
-staff = DStaff(beats=2)
-print(staff.quantize.ms())
-print(staff.quantize.seconds())
-print(staff.quantize.pixels())
-print(staff.quantize.frames())
-print(staff.quantize.samples())
-```
-
-We have the same thing for the last Inner Classes bellow
+[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
 
 ***
 
 ## Inner Class DawTools.DStaff.WholeNote
 
-| Functions | Return |
+| Chains | Return |
 |:----------|:-------|
 |def ms()| Milliseconds in WholeNote|
 |def seconds()| Seconds in WholeNote|
@@ -766,22 +728,13 @@ We have the same thing for the last Inner Classes bellow
 |def beats()| Beats in WholeNote|
 |def bars()| Bars in WholeNote|
 
-```python
-staff = DStaff()
-print(staff.wholeNote.ms())
-print(staff.wholeNote.seconds())
-print(staff.wholeNote.pixels())
-print(staff.wholeNote.frames())
-print(staff.wholeNote.samples())
-print(staff.wholeNote.beats())
-print(staff.wholeNote.bars())
-```
+[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
 
 ***
 
 ## Inner Class DawTools.DStaff.Bar
 
-| Functions | Return |
+| Chains | Return |
 |:----------|:-------|
 |def ms()| Milliseconds in Bar|
 |def seconds()| Seconds in Bar|
@@ -791,22 +744,13 @@ print(staff.wholeNote.bars())
 |def wholeNotes()| Whole Notes in Bar|
 |def beats()| Beats in Bar|
 
-```python
-staff = DStaff()
-print(staff.bar.ms())
-print(staff.bar.seconds())
-print(staff.bar.pixels())
-print(staff.bar.frames())
-print(staff.bar.samples())
-print(staff.bar.wholeNotes())
-print(staff.bar.beats())
-```
+[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
 
 ***
 
 ## Inner Class DawTools.DStaff.Beat
 
-| Functions | Return |
+| Chains | Return |
 |:----------|:-------|
 |def ms()| Milliseconds in Beat|
 |def seconds()| Seconds in Beat|
@@ -816,22 +760,13 @@ print(staff.bar.beats())
 |def wholeNotes()| Whole Notes in Beat|
 |def bars()| Bars in Beat|
 
-```python
-staff = DStaff()
-print(staff.beat.ms())
-print(staff.beat.seconds())
-print(staff.beat.pixels())
-print(staff.beat.frames())
-print(staff.beat.samples())
-print(staff.beat.wholeNotes())
-print(staff.beat.bars())
-```
+[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
 
 ***
 
 ## Inner Class DawTools.DStaff.Frame
 
-| Functions | Return |
+| Chains | Return |
 |:----------|:-------|
 |def ms()| Milliseconds in Frame|
 |def seconds()| Seconds in Frame|
@@ -841,22 +776,13 @@ print(staff.beat.bars())
 |def beats()| Beats in Frame|
 |def bars()| Bars in Frame|
 
-```python
-staff = DStaff()
-print(staff.frame.ms())
-print(staff.frame.seconds())
-print(staff.frame.pixels())
-print(staff.frame.samples())
-print(staff.frame.wholeNotes())
-print(staff.frame.beats())
-print(staff.frame.bars())
-```
+[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
 
 ***
 
 ## Inner Class DawTools.DStaff.Sample
 
-| Functions | Return |
+| Chains | Return |
 |:----------|:-------|
 |def ms()| Milliseconds in Sample|
 |def seconds()| Seconds in Sample|
@@ -866,14 +792,82 @@ print(staff.frame.bars())
 |def beats()| Beats in Sample|
 |def bars()| Bars in Sample|
 
+[More about DStaff chaining methods...](staff.html#dstaffchainingmethods)
+
+***
+
+## DStaff chaining methods
+
+The best to way to explain DStaff Inner classes chain is by code examples.
+
+In the code bellow we check how many pixels exist in 1 beat
 ```python
 staff = DStaff()
-print(staff.sample.ms())
-print(staff.sample.seconds())
-print(staff.sample.pixels())
-print(staff.sample.frames())
-print(staff.sample.wholeNotes())
-print(staff.sample.beats())
-print(staff.sample.bars())
+print(staff.beat.pixels())
+# >>> 50.00
+```
+
+If we want to check how many pixels exist in 2 beats:
+```python
+staff = DStaff()
+print(staff.beat(2).pixels())
+# >>> 100.00
+```
+
+If we pass in an iterations parameter we get a generator
+```python
+staff = DStaff()
+iterations = 2
+print(staff.beat.pixels(iterations))
+# >>> <generator object DStaff.Beat.__gen.<locals>.<genexpr> at 0x000001A744EB2580>
+```
+
+Iterating over this generator will retrieve pixel X positions.
+```python
+staff = DStaff()
+
+for pixel in staff.beat.pixels(4):
+    print(pixel)
+# >>> 0.0    > beat 1 at pixel 0
+# >>> 50.00  > beat 2 at pixel 50
+# >>> 100.00 > beat 3 at pixel 100
+# >>> 150.00 > beat 4 at pixel 150
+```
+
+So far we worked with pixels in beat but all other chain methods function in the exact same way.
+```python
+staff = DStaff()
+
+# Pixels in 1 whole note
+print(staff.wholeNote.pixels())
+# >>> 200
+
+# Pixels in 2 whole notes
+print(staff.wholeNote(2).pixels())
+# >>> 400
+
+# Pixel positions for 4 whole notes
+for pixel in staff.wholeNote.pixels(4):
+    print(pixel)
+# >>> 0   > 1st whole note placed at pixel 0
+# >>> 200 > 2nd whole note placed at pixel 200
+# >>> 400 > 3rd whole note placed at pixel 400
+# >>> 600 > 4th whole note placed at pixel 600
+
+# Beats in 1 whole note
+print(staff.wholeNote().beats())
+# >>> 4
+
+# Beats in 2 whole notes
+print(staff.wholeNote(2).beats())
+# >>> 8
+
+# Beat position for 4 whole notes
+for beat in staff.wholeNote.beats(4):
+    print(beat)
+# >>> 1  > 1st whole note placed at beat 1
+# >>> 5  > 2nd whole note placed at beat 5
+# >>> 9  > 3rd whole note placed at beat 9
+# >>> 13 > 4th whole note placed at beat 13
 ```
 
