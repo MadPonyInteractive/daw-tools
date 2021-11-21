@@ -80,6 +80,15 @@ In a big project like a digital audio workstation (daw) for example, you may nee
 Perhaps you will have the track timeline/viewport independent of the piano roll. Or you
 might need a separate staff for a sequencer.
 
+Because DawTools.DStaff inherits [PySide6.QtCore.QObject](https://doc.qt.io/qtforpython/PySide6/QtCore/QObject.html?highlight=qobject#PySide6.QtCore.PySide6.QtCore.QObject) 
+you can pass it as a parent to a QGraphicsScene for example.
+```python
+staff = DStaff()
+scene = QGraphicsScene(staff)
+view = QGraphicsView(scene)
+
+print(scene.parent())#>>> DStaff
+```
 
 ***
 
