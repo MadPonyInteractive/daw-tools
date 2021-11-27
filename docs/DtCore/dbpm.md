@@ -72,11 +72,11 @@ Constructs a DBpm object.|
 ## DawTools.DtCore.DBpm.seconds(noteValue)
 * Parameters
 
-  * **noteValue** - [DawTools.DtCore.DNoteValue](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm)
+  * **noteValue** - [`DawTools.DtCore.DNoteValue`](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm)
 
 * Return type
 
-  * [DawTools.DtCore.DSeconds](https://madponyinteractive.github.io/daw-tools/DtCore/dseconds.htm)
+  * [`DawTools.DtCore.DSeconds`](https://madponyinteractive.github.io/daw-tools/DtCore/dseconds.htm)
 
 Returns DSeconds object with seconds in noteValue|
 
@@ -99,7 +99,7 @@ Returns seconds in 1 whole note|
 
   value - `float`
 
-  value - [`DawTools.DtCore.DNoteValue`](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm){: .fs-3 }
+  value - [`DawTools.DtCore.DNoteValue`](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm)
 
 * Return type
 
