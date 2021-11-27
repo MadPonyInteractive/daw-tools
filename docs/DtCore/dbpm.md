@@ -103,6 +103,7 @@ Sets DBpm.value If value is of type float or int
   * `DawTools.DtCore.DSeconds`
 
 Returns current DBpm.value | If **value** is of type None, float or int
+
 Return seconds in value    | If **value** is of type DNoteValue
 
 
