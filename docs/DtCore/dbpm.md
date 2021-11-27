@@ -21,16 +21,16 @@ The [DBpm]() class provides a surface to convert DNoteValue objects to seconds. 
 
 | Methods |
 |:----------|
-|def __add__()|
-|def __sub__()|
-|def __mul__()|
-|def __truediv__()|
-|def __eq__()|
-|def __ge__()|
-|def __gt__()|
-|def __le__()|
-|def __lt__()|
-|def [__call__(DNoteValue)]()|
+|def \_\_add\_\_()|
+|def \_\_sub\_\_()|
+|def \_\_mul\_\_()|
+|def \_\_truediv\_\_()|
+|def \_\_eq\_\_()|
+|def \_\_ge\_\_()|
+|def \_\_gt\_\_()|
+|def \_\_le\_\_()|
+|def \_\_lt\_\_()|
+|def [\_\_call\_\_(DNoteValue)]()|
 |def [seconds(DNoteValue)]()|
 |def [secondsPerNote()]()|
 
@@ -88,7 +88,7 @@ Returns seconds in 1 whole note
 
 ***
 
-### DawTools.DtCore.DBpm.__call__(value=None)
+### DawTools.DtCore.DBpm.\_\_call\_\_(value=None)
 Sets DBpm.value If value is of type float or int
 
 * Parameters
