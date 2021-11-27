@@ -95,16 +95,18 @@ Returns seconds in 1 whole note|
 
 * Parameters
 
-  value - int
-  {: .label }
-  value - float
-  {: .label }
-  value - [DawTools.DtCore.DNoteValue](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm){: .btn }
+  value - `int`
 
+  value - `float`
+<span class="fs-8">
+  value - [DawTools.DtCore.DNoteValue](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm){: .btn }
+</span>
 * Return type
 
-  * float{: .label }
+  * `float`
+<span class="fs-6">
   * [DawTools.DtCore.DSeconds](https://madponyinteractive.github.io/daw-tools/DtCore/dseconds.htm){: .btn }
+</span>
 
 Sets DBpm.value If value is of type float or int|
 Returns current DBpm.value | If **value** is of type None, float or int
