@@ -62,7 +62,7 @@ print(milliseconds)# 2000
 
   * **value** - `float` -> default = 120
 
-Constructs a DBpm object.
+Constructs a DBpm object.|
 
 ***
 
@@ -75,7 +75,7 @@ Constructs a DBpm object.
 
   * `DawTools.DtCore.DSeconds`
 
-Returns DSeconds object with seconds in noteValue
+Returns DSeconds object with seconds in noteValue|
 
 ***
 
@@ -84,7 +84,7 @@ Returns DSeconds object with seconds in noteValue
 
   * `Decimal`
 
-Returns seconds in 1 whole note
+Returns seconds in 1 whole note|
 
 ***
 
@@ -103,7 +103,6 @@ Sets DBpm.value If value is of type float or int
   * `DawTools.DtCore.DSeconds`
 
 Returns current DBpm.value | If **value** is of type None, float or int
-
 Return seconds in value    | If **value** is of type DNoteValue
 
 
