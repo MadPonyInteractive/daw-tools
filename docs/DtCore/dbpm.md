@@ -95,9 +95,11 @@ Returns seconds in 1 whole note|
 
 * Parameters
 
-  * **value** - int{: .label }
-  * **value** - float{: .label }
-  * **value** - [DawTools.DtCore.DNoteValue](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm){: .btn }
+  value - int
+  {: .label }
+  value - float
+  {: .label }
+  value - [DawTools.DtCore.DNoteValue](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm){: .btn }
 
 * Return type
 
