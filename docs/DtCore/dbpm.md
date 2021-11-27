@@ -105,7 +105,7 @@ Returns seconds in 1 whole note|
 
   * `float`
 
-  * [DawTools.DtCore.DSeconds](https://madponyinteractive.github.io/daw-tools/DtCore/dseconds.htm){ .fs-1 }
+  * [DawTools.DtCore.DSeconds](https://madponyinteractive.github.io/daw-tools/DtCore/dseconds.htm){: .fs-1 }
 
 
 Sets DBpm.value If value is of type float or int|
