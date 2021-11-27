@@ -99,13 +99,13 @@ Returns seconds in 1 whole note|
 
   value - `float`
 
-  value - [DawTools.DtCore.DNoteValue](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm){: .fs-2 }
+  value - [`DawTools.DtCore.DNoteValue`](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm){: .fs-3 }
 
 * Return type
 
   * `float`
 
-  * [DawTools.DtCore.DSeconds](https://madponyinteractive.github.io/daw-tools/DtCore/dseconds.htm){: .fs-3 }
+  * [`DawTools.DtCore.DSeconds`](https://madponyinteractive.github.io/daw-tools/DtCore/dseconds.htm)
 
 
 Sets DBpm.value If value is of type float or int|
