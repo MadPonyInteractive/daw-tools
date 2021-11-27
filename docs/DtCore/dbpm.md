@@ -99,7 +99,7 @@ Returns seconds in 1 whole note|
 
   value - `float`
 
-  value - [DawTools.DtCore.DNoteValue](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm){: .fs-1 }
+  value - [DawTools.DtCore.DNoteValue](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm){: .fs-2 }
 
 * Return type
 
