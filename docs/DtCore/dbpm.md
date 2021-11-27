@@ -7,7 +7,7 @@ parent: DtCore
 
 # DawTools.DtCore.DBpm
 
-The [DBpm]() class provides a surface to convert DNoteValue objects to seconds. [More...](dbpm.html#detailed-description)
+The [DBpm](dbpm.html#dataclass-dawtoolsdtcoredbpmvalue) class provides a surface to convert DNoteValue objects to seconds. [More...](dbpm.html#detailed-description)
 
 | Inheritance            |
 |:-----------------------|
@@ -30,11 +30,11 @@ The [DBpm]() class provides a surface to convert DNoteValue objects to seconds. 
 |def \_\_gt\_\_()|
 |def \_\_le\_\_()|
 |def \_\_lt\_\_()|
-|def [\_\_call\_\_(DNoteValue)]()|
-|def [seconds(DNoteValue)]()|
-|def [secondsPerNote()]()|
+|def [\_\_call\_\_(DNoteValue)](dbpm.html#dawtoolsdtcoredbpm__call__valuenone)|
+|def [seconds(DNoteValue)](dbpm.html#dawtoolsdtcoredbpmsecondsnotevalue)|
+|def [secondsPerNote()](dbpm.html#dawtoolsdtcoredbpmsecondspernote)|
 
-## Detailed Description
+### Detailed Description
 This @dataclass can be used for simple conversions from a DawTools.DtCore.DNoteValue object to a
 DawTools.DtCore.DSeconds object for retrieval of seconds in a note value.
 
@@ -57,7 +57,7 @@ print(milliseconds)# 2000
 
 ***
 
-### @dataclass DawTools.DtCore.DBpm(value)
+## @dataclass DawTools.DtCore.DBpm(value)
 * Parameters
 
   * **value** - `float` -> default = 120
@@ -66,7 +66,7 @@ Constructs a DBpm object.|
 
 ***
 
-### DawTools.DtCore.DBpm.seconds(noteValue)
+## DawTools.DtCore.DBpm.seconds(noteValue)
 * Parameters
 
   * **noteValue** - `DawTools.DtCore.DNoteValue`
@@ -79,7 +79,7 @@ Returns DSeconds object with seconds in noteValue|
 
 ***
 
-### DawTools.DtCore.DBpm.secondsPerNote()
+## DawTools.DtCore.DBpm.secondsPerNote()
 * Return type
 
   * `Decimal`
@@ -88,8 +88,7 @@ Returns seconds in 1 whole note|
 
 ***
 
-### DawTools.DtCore.DBpm.\_\_call\_\_(value=None)
-Sets DBpm.value If value is of type float or int
+## DawTools.DtCore.DBpm.\_\_call\_\_(value=None)
 
 * Parameters
 
@@ -102,6 +101,7 @@ Sets DBpm.value If value is of type float or int
   * `float`
   * `DawTools.DtCore.DSeconds`
 
+Sets DBpm.value If value is of type float or int|
 Returns current DBpm.value | If **value** is of type None, float or int
 Return seconds in value    | If **value** is of type DNoteValue
 
