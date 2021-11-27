@@ -1,3 +1,5 @@
+I decided to start a new version of this project at [DawTools](https://github.com/MadPonyInteractive/DawTools) but everything here still works.
+
 daw-tools
 =========
 
