@@ -72,11 +72,11 @@ Constructs a DBpm object.|
 ## DawTools.DtCore.DBpm.seconds(noteValue)
 * Parameters
 
-  * **noteValue** - [DawTools.DtCore.DNoteValue](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm){: .btn }
+  * **noteValue** - [DawTools.DtCore.DNoteValue](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm)
 
 * Return type
 
-  * [DawTools.DtCore.DSeconds](https://madponyinteractive.github.io/daw-tools/DtCore/dseconds.htm){: .btn }
+  * [DawTools.DtCore.DSeconds](https://madponyinteractive.github.io/daw-tools/DtCore/dseconds.htm)
 
 Returns DSeconds object with seconds in noteValue|
 
@@ -85,7 +85,7 @@ Returns DSeconds object with seconds in noteValue|
 ## DawTools.DtCore.DBpm.secondsPerNote()
 * Return type
 
-  * Decimal{: .label }
+  * `Decimal`
 
 Returns seconds in 1 whole note|
 
@@ -99,16 +99,14 @@ Returns seconds in 1 whole note|
 
   value - `float`
 
-  value -   
-<span class="fs-8">
-[DawTools.DtCore.DNoteValue](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm){: .btn }
-</span>
+  value - [DawTools.DtCore.DNoteValue](https://madponyinteractive.github.io/daw-tools/DtCore/dnotevalue.htm)
+
 * Return type
 
   * `float`
-<span class="fs-6">
-*[DawTools.DtCore.DSeconds](https://madponyinteractive.github.io/daw-tools/DtCore/dseconds.htm){: .btn }
-</span>
+
+  * [DawTools.DtCore.DSeconds](https://madponyinteractive.github.io/daw-tools/DtCore/dseconds.htm)
+
 
 Sets DBpm.value If value is of type float or int|
 Returns current DBpm.value | If **value** is of type None, float or int
